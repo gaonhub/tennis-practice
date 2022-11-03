@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import myweb.secondboard.domain.Matching;
 import myweb.secondboard.domain.Member;
 import myweb.secondboard.domain.Player;
-import myweb.secondboard.dto.MatchingSaveForm;
-import myweb.secondboard.dto.MatchingUpdateForm;
-import myweb.secondboard.dto.PlayerAddForm;
-import myweb.secondboard.dto.ResultAddForm;
+import myweb.secondboard.dto.*;
 import myweb.secondboard.service.MatchingService;
 import myweb.secondboard.service.PlayerService;
 import myweb.secondboard.web.CourtType;
@@ -51,6 +48,9 @@ public class MatchingController {
     model.addAttribute("nowPage", nowPage);
     model.addAttribute("startPage", startPage);
     model.addAttribute("endPage", endPage);
+
+    MatchingSaveForm matchingForm = new MatchingSaveForm();
+    model.addAttribute("matching", matchingForm);
 
     return "/matching/matchingHome";
   }
