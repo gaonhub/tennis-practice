@@ -1,112 +1,143 @@
 package myweb.secondboard.domain;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import myweb.secondboard.dto.MatchSaveForm;
-import myweb.secondboard.dto.MatchUpdateForm;
+import myweb.secondboard.dto.MatchingSaveForm;
+import myweb.secondboard.dto.MatchingUpdateForm;
+import myweb.secondboard.dto.ResultAddForm;
 import myweb.secondboard.web.CourtType;
-import myweb.secondboard.web.MatchCondition;
-import myweb.secondboard.web.MatchType;
+import myweb.secondboard.web.GameResult;
+import myweb.secondboard.web.MatchingCondition;
+import myweb.secondboard.web.MatchingType;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @DynamicInsert
 public class Matching {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "match_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  @Column(name = "matching_id")
+  private Long id;
 
-    @NotNull
-    @Column(length = 31)
-    private String matchTitle;
+  @NotNull
+  @Column(length = 11)
+  private String author;   //member nickname
 
-    @NotNull
-    @Column(length = 31)
-    private LocalDate matchDate;
+  @NotNull
+  @Column(length = 31)
+  private String title;
 
-    @NotNull
-    private String startTime;
+  @NotNull
+  @Column(length = 145)
+  private String place;
 
-    @NotNull
-    private String endTime;
+  @NotNull
+  @Column(length = 40)
+  private LocalDate matchingDate;
 
-    @Enumerated(EnumType.STRING)
-    private MatchType matchType;
+  @NotNull
+  @Column(length = 40)
+  private String matchingStartTime;
 
-    @Enumerated(EnumType.STRING)
-    private CourtType courtType;
+  @NotNull
+  @Column(length = 40)
+  private String matchingEndTime;
 
-    @Enumerated(EnumType.STRING)
-    private MatchCondition matchCondition;
+  @CreatedDate
+  @Column(length = 40)
+  private String createdDate;
 
-    @Column(columnDefinition = "integer default 1")
-    private Integer playerNumber;
+  @LastModifiedDate
+  @Column(length = 40)
+  private String modifiedDate;
 
-    @NotNull
-    @Column(length = 31)
-    private String matchPlace;
+  @Column(columnDefinition = "integer default 1")
+  private Integer playerNumber;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+  @Enumerated(EnumType.STRING)
+  private CourtType courtType;
 
+  @Enumerated(EnumType.STRING)
+  private MatchingType matchingType;
 
-    public static Matching createMatch(MatchSaveForm match, Member member) {
-        Matching matching = new Matching();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+  @Enumerated(EnumType.STRING)
+  private MatchingCondition matchingCondition;
 
-        matching.setMatchTitle(match.getMatchTitle());
-        matching.setMatchDate(match.getMatchDate());
-        matching.setStartTime(match.getStartTime());
-        matching.setEndTime(match.getEndTime());
-        matching.setMatchType(match.getMatchType());
-        matching.setCourtType(match.getCourtType());
-        matching.setMatchPlace(match.getMatchPlace());
-        matching.setMatchCondition(MatchCondition.AVAILABLE);
-        matching.setPlayerNumber(match.getPlayerNumber());
-        matching.setMember(member);
-        return matching;
+  @ManyToOne(fetch = LAZY)
+  @JoinColumn(name = "member_id")
+  private Member member;
+
+  @Enumerated(EnumType.STRING)
+  private GameResult gameResult;
+
+  public static Matching createMatching(MatchingSaveForm form, Member member) {
+    Matching matching = new Matching();
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+
+    matching.setTitle(form.getTitle());
+    matching.setPlace(form.getPlace());
+    matching.setAuthor(member.getNickname());
+    matching.setMatchingDate(form.getMatchingDate());
+    matching.setMatchingStartTime(form.getMatchingStartTime());
+    matching.setMatchingEndTime(form.getMatchingEndTime());
+    matching.setCreatedDate(LocalDateTime.now().format(dtf));
+    matching.setCourtType(form.getCourtType());
+    matching.setMatchingType(form.getMatchingType());
+    matching.setMatchingCondition(MatchingCondition.AVAILABLE);
+    matching.setPlayerNumber(matching.getPlayerNumber());
+    matching.setMember(member);
+    return matching;
+  }
+
+  public void updateMatching(Matching matching, MatchingUpdateForm form, Member member) {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+
+    matching.setId(form.getId());
+    matching.setTitle(form.getTitle());
+    matching.setPlace(form.getPlace());
+    matching.setAuthor(member.getNickname());
+    matching.setMatchingDate(form.getMatchingDate());
+    matching.setMatchingStartTime(form.getMatchingStartTime());
+    matching.setMatchingEndTime(form.getMatchingEndTime());
+    matching.setCourtType(form.getCourtType());
+    matching.setMatchingType(form.getMatchingType());
+    matching.setModifiedDate(LocalDateTime.now().format(dtf));
+    matching.setMember(member);
+
+  }
+
+  public void increasePlayerNumber(Matching matching) {
+    matching.setPlayerNumber(matching.getPlayerNumber() + 1);
+  }
+
+  public void matchingConditionCheck(Matching matching) {
+    if (matching.getPlayerNumber() == 2 && matching.getMatchingType().getTitle() == "단식") {
+      matching.setMatchingCondition(MatchingCondition.DONE);
     }
-
-    public void update(MatchUpdateForm match, Member member, Matching matching) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-
-        matching.setId(match.getId());
-        matching.setMatchTitle(match.getMatchTitle());
-        matching.setMatchDate(match.getMatchDate());
-        matching.setStartTime(match.getStartTime());
-        matching.setEndTime(match.getEndTime());
-        matching.setMatchType(match.getMatchType());
-        matching.setCourtType(match.getCourtType());
-        matching.setMatchPlace(match.getMatchPlace());
-        matching.setMember(member);
+    if (matching.getPlayerNumber() == 4 && matching.getMatchingType().getTitle() == "복식") {
+      matching.setMatchingCondition(MatchingCondition.DONE);
     }
+  }
 
-
-    public void increasePlayer(Matching matching) {
-        matching.setPlayerNumber(matching.getPlayerNumber() + 1);
-    }
-
-    public void matchConditionCheck(Matching matching) {
-        if (matching.getPlayerNumber() == 2 && matching.getMatchType().getTitle() == "단식") {
-            matching.setMatchCondition(MatchCondition.DONE);
-        }
-        if (matching.getPlayerNumber() == 4 && matching.getMatchType().getTitle() == "복식") {
-            matching.setMatchCondition(MatchCondition.DONE);
-        }
-    }
+  public void updateMatchingResult(ResultAddForm resultAddForm, Matching matching) {
+    matching.setId(resultAddForm.getId());
+    matching.setGameResult(resultAddForm.getGameResult());
+  }
 }

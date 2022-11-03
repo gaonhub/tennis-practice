@@ -17,13 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TournamentService {
 
   private final TournamentRepository tournamentRepository;
-  private final LocalRepository localRepository;
 
   public List<Tournament> getTournamentList() {
     return tournamentRepository.findAll();
   }
 
-  public List<Local> getLocalList() {
-    return  localRepository.findAll();
-  }
 }

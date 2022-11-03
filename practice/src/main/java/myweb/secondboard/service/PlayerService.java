@@ -1,11 +1,12 @@
 package myweb.secondboard.service;
 
+
 import lombok.RequiredArgsConstructor;
 import myweb.secondboard.domain.Matching;
 import myweb.secondboard.domain.Member;
 import myweb.secondboard.domain.Player;
 import myweb.secondboard.dto.PlayerAddForm;
-import myweb.secondboard.repository.MatchRepository;
+import myweb.secondboard.repository.MatchingRepository;
 import myweb.secondboard.repository.MemberRepository;
 import myweb.secondboard.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
@@ -18,20 +19,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlayerService {
 
-    private final PlayerRepository playerRepository;
+  private final MemberRepository memberRepository;
 
-    private final MemberRepository memberRepository;
+  private final MatchingRepository matchingRepository;
 
-    private final MatchRepository matchRepository;
+  private final PlayerRepository playerRepository;
 
-    public void matchPlayerAdd(PlayerAddForm form) {
-        Member member = memberRepository.findById(Long.valueOf(form.getMemberId())).get();
-        Matching matching = matchRepository.findById(Long.valueOf(form.getMatchId())).get();
-        Player player = Player.createPlayerFromForm(form, member, matching);
-        playerRepository.save(player);
-    }
+  @Transactional
+  public void matchingPlayerAdd(PlayerAddForm form) {
+    Member member = memberRepository.findById(Long.valueOf(form.getMemberId())).get();
+    Matching matching = matchingRepository.findById(Long.valueOf(form.getMatchingId())).get();
+    Player player = Player.createPlayerFromForm(form, member, matching);
+    playerRepository.save(player);
+  }
 
-    public List<Player> findAllByMatchingId(Long matchId) {
-        return playerRepository.findAllByMatchingId(matchId);
-    }
+  public List<Player> findAllByMatchingId(Long matchingId) {
+    return playerRepository.findAllByMatchingId(matchingId);
+  }
 }
