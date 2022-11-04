@@ -8,9 +8,7 @@ import myweb.secondboard.domain.Player;
 import myweb.secondboard.dto.*;
 import myweb.secondboard.service.MatchingService;
 import myweb.secondboard.service.PlayerService;
-import myweb.secondboard.web.CourtType;
-import myweb.secondboard.web.GameResult;
-import myweb.secondboard.web.SessionConst;
+import myweb.secondboard.web.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,13 +50,13 @@ public class MatchingController {
     MatchingSaveForm matchingForm = new MatchingSaveForm();
     model.addAttribute("matching", matchingForm);
 
-    return "/matching/matchingHome";
-  }
+    MatchingType[] matchTypes = MatchingType.values();
+    model.addAttribute("matchTypes", matchTypes);
 
-  @GetMapping("/matchingAdd")
-  public String matchingAddForm(Model model) {
-    model.addAttribute("matching", new MatchingSaveForm());
-    return "/matching/matchingAddForm";
+    CourtType[] courtTypes = CourtType.values();
+    model.addAttribute("courtTypes", courtTypes);
+
+    return "/matching/matchingHome";
   }
 
   @PostMapping("/new")
@@ -103,8 +101,42 @@ public class MatchingController {
       model.addAttribute("playerMemberCheck", playerMemberCheck);
     }
 
+    MatchingType[] matchTypes = MatchingType.values();
+    model.addAttribute("matchTypes", matchTypes);
+
+    CourtType[] courtTypes = CourtType.values();
+    model.addAttribute("courtTypes", courtTypes);
+
+
+    MatchingUpdateForm matchingForm = new MatchingUpdateForm();
+    matchingForm.setId(matching.getId());
+    matchingForm.setTitle(matching.getTitle());
+    matchingForm.setPlace(matching.getPlace());
+    matchingForm.setCourtType(matching.getCourtType());
+    matchingForm.setMatchingDate(matching.getMatchingDate());
+    matchingForm.setMatchingStartTime(matching.getMatchingStartTime());
+    matchingForm.setMatchingEndTime(matching.getMatchingEndTime());
+    matchingForm.setMatchingType(matching.getMatchingType());
+    model.addAttribute("matchingForm", matchingForm);
 
     return "/matching/matchingDetail";
+  }
+
+  @PostMapping("/update/{matchingId}")
+  public String matchingUpdate(@Validated @ModelAttribute("matchingForm") MatchingUpdateForm form,
+                               BindingResult bindingResult, HttpServletRequest request,
+                               @PathVariable("matchingId") Long matchingId) {
+
+    Member member = (Member) request.getSession(false)
+      .getAttribute(SessionConst.LOGIN_MEMBER);
+
+    if (bindingResult.hasErrors()) {
+      log.info("errors = {}", bindingResult);
+      return "/matching/matchingUpdateForm";
+    }
+
+    matchingService.update(form, member);
+    return "redirect:/matching/detail/" + matchingId;
   }
 
   @PostMapping("/delete/{matchingId}")
@@ -118,41 +150,6 @@ public class MatchingController {
   @PostMapping("/delete/memberDelete/{matchingId}")
   public String matchingMemberDelete(@PathVariable("matchingId") Long matchingId, Long memberId) {
     matchingService.deleteMatchingMember(matchingId, memberId);
-    return "redirect:/matching/detail/" + matchingId;
-  }
-
-  @GetMapping("/update/{matchingId}")
-  public String matchingUpdateForm(@PathVariable("matchingId") Long matchingId, Model model) {
-    Matching matching = matchingService.findOne(matchingId);
-
-    MatchingUpdateForm form = new MatchingUpdateForm();
-    form.setId(matching.getId());
-    form.setTitle(matching.getTitle());
-    form.setPlace(matching.getPlace());
-    form.setCourtType(matching.getCourtType());
-    form.setMatchingDate(matching.getMatchingDate());
-    form.setMatchingStartTime(matching.getMatchingStartTime());
-    form.setMatchingEndTime(matching.getMatchingEndTime());
-    form.setMatchingType(matching.getMatchingType());
-    model.addAttribute("form", form);
-
-    return "/matching/matchingUpdateForm";
-  }
-
-  @PostMapping("/update/{matchingId}")
-  public String matchingUpdate(@Validated @ModelAttribute("form") MatchingUpdateForm form,
-                               BindingResult bindingResult, HttpServletRequest request,
-                               @PathVariable("matchingId") Long matchingId) {
-
-    Member member = (Member) request.getSession(false)
-      .getAttribute(SessionConst.LOGIN_MEMBER);
-
-    if (bindingResult.hasErrors()) {
-      log.info("errors = {}", bindingResult);
-      return "/matching/matchingUpdateForm";
-    }
-
-    matchingService.update(form, member);
     return "redirect:/matching/detail/" + matchingId;
   }
 
