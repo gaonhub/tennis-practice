@@ -6,6 +6,7 @@ $(document).ready(function () {
     $("#matchingDate").attr({"min" : today });
 });
 
+
 $('#matchingStartTime').timepicker({
     timeFormat: 'HH:mm',
     interval: 10,

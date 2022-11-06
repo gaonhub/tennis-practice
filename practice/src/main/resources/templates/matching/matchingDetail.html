@@ -138,17 +138,15 @@
                             <table>
                                 <form class="col" role="form"
                                       th:action="@{/matching/delete/{id} (id=${matching.id})}"
-                                      method="post">
+                                      method="post" >
                                     <div th:if="${session.loginMember != null}" class="d-md-flex justify-content-md-start float-lg-start" >
-                                    <button type="submit" class="btn btn-primary px-4 py-3">매칭 삭제</button>
+                                        <button type="submit" class="btn btn-primary px-4 py-3">매칭 삭제</button>
                                     </div>
                                 </form>
-<!--                                <form class="col" role="form" th:action="@{/matching/update/{id} (id=${matching.id})}" method="get">-->
-                                    <div th:if="${session.loginMember != null}" class="d-md-flex justify-content-md-start ">
-                                        <a type="button" class="btn btn-primary px-4 py-3"
-                                           data-bs-toggle="modal" data-bs-target="#matchUpdateModal">매치 수정</a>
-                                    </div>
-<!--                                </form>-->
+                                <div th:if="${session.loginMember != null}" class="d-md-flex justify-content-md-start ">
+                                    <a type="button" class="btn btn-primary px-4 py-3"
+                                       data-bs-toggle="modal" data-bs-target="#matchUpdateModal">매치 수정</a>
+                                </div>
                             </table>
                             <br>
                             <table>A팀 맴버 정보
@@ -290,8 +288,6 @@
 </div>
 <!-- 매치결과 모달 끝 -->
 
-
-
 <!-- 매치수정 모달 -->
 <div class="modal fade" id="matchUpdateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -303,6 +299,7 @@
             <div class="modal-body">
 
                 <form th:action="@{/matching/update/{id} (id=${matchingForm.id})}" th:object="${matchingForm}" method="POST">
+                    <input type="hidden" th:field="${matchingForm.id}">
                     <div class="mb-3">
                         <label for="matchingTitle" class="form-label">매칭 이름<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" th:field="${matchingForm.title}" id="matchingTitle" placeholder="매치 이름을 입력해주세요" required>
@@ -353,6 +350,8 @@
     </div>
 </div>
 <!-- 매치수정 모달 끝 -->
+
+
 
 
 

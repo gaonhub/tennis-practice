@@ -5,10 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import myweb.secondboard.domain.Matching;
 import myweb.secondboard.domain.Member;
 import myweb.secondboard.domain.Player;
-import myweb.secondboard.dto.*;
+import myweb.secondboard.dto.MatchingSaveForm;
+import myweb.secondboard.dto.MatchingUpdateForm;
+import myweb.secondboard.dto.PlayerAddForm;
+import myweb.secondboard.dto.ResultAddForm;
 import myweb.secondboard.service.MatchingService;
 import myweb.secondboard.service.PlayerService;
-import myweb.secondboard.web.*;
+import myweb.secondboard.web.CourtType;
+import myweb.secondboard.web.GameResult;
+import myweb.secondboard.web.MatchingType;
+import myweb.secondboard.web.SessionConst;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -107,7 +113,6 @@ public class MatchingController {
     CourtType[] courtTypes = CourtType.values();
     model.addAttribute("courtTypes", courtTypes);
 
-
     MatchingUpdateForm matchingForm = new MatchingUpdateForm();
     matchingForm.setId(matching.getId());
     matchingForm.setTitle(matching.getTitle());
@@ -122,23 +127,6 @@ public class MatchingController {
     return "/matching/matchingDetail";
   }
 
-  @PostMapping("/update/{matchingId}")
-  public String matchingUpdate(@Validated @ModelAttribute("matchingForm") MatchingUpdateForm form,
-                               BindingResult bindingResult, HttpServletRequest request,
-                               @PathVariable("matchingId") Long matchingId) {
-
-    Member member = (Member) request.getSession(false)
-      .getAttribute(SessionConst.LOGIN_MEMBER);
-
-    if (bindingResult.hasErrors()) {
-      log.info("errors = {}", bindingResult);
-      return "/matching/matchingUpdateForm";
-    }
-
-    matchingService.update(form, member);
-    return "redirect:/matching/detail/" + matchingId;
-  }
-
   @PostMapping("/delete/{matchingId}")
   public String matchingDelete(@PathVariable("matchingId") Long matchingId) {
     List<Player> players = playerService.findAllByMatchingId(matchingId);
@@ -150,6 +138,23 @@ public class MatchingController {
   @PostMapping("/delete/memberDelete/{matchingId}")
   public String matchingMemberDelete(@PathVariable("matchingId") Long matchingId, Long memberId) {
     matchingService.deleteMatchingMember(matchingId, memberId);
+    return "redirect:/matching/detail/" + matchingId;
+  }
+
+  @PostMapping("/update/{matchingId}")
+  public String matchingUpdate(@Validated @ModelAttribute("matchingForm") MatchingUpdateForm form,
+                               BindingResult bindingResult, HttpServletRequest request,
+                               @PathVariable("matchingId") Long matchingId) {
+
+    Member member = (Member) request.getSession(false)
+      .getAttribute(SessionConst.LOGIN_MEMBER);
+
+    if (bindingResult.hasErrors()) {
+      log.info("errors = {}", bindingResult);
+      return "redirect:/matching/detail/" + matchingId;
+    }
+
+    matchingService.update(form, member);
     return "redirect:/matching/detail/" + matchingId;
   }
 
