@@ -7,10 +7,7 @@ import lombok.Setter;
 import myweb.secondboard.dto.MatchingSaveForm;
 import myweb.secondboard.dto.MatchingUpdateForm;
 import myweb.secondboard.dto.ResultAddForm;
-import myweb.secondboard.web.CourtType;
-import myweb.secondboard.web.GameResult;
-import myweb.secondboard.web.MatchingCondition;
-import myweb.secondboard.web.MatchingType;
+import myweb.secondboard.web.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -80,6 +77,9 @@ public class Matching {
   @Enumerated(EnumType.STRING)
   private MatchingCondition matchingCondition;
 
+  @Enumerated(EnumType.STRING)
+  private MatchingStatus matchingStatus;
+
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
@@ -101,13 +101,14 @@ public class Matching {
     matching.setCourtType(form.getCourtType());
     matching.setMatchingType(form.getMatchingType());
     matching.setMatchingCondition(MatchingCondition.AVAILABLE);
+    matching.setMatchingStatus(MatchingStatus.BEFORE);
     matching.setPlayerNumber(matching.getPlayerNumber());
     matching.setMember(member);
     return matching;
   }
 
   public void updateMatching(Matching matching, MatchingUpdateForm form, Member member) {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     matching.setId(form.getId());
     matching.setTitle(form.getTitle());
@@ -128,10 +129,10 @@ public class Matching {
   }
 
   public void matchingConditionCheck(Matching matching) {
-    if (matching.getPlayerNumber() == 2 && matching.getMatchingType().getTitle() == "단식") {
+    if (matching.getPlayerNumber() == 2 && matching.getMatchingType().getTitle().equals("단식")) {
       matching.setMatchingCondition(MatchingCondition.DONE);
     }
-    if (matching.getPlayerNumber() == 4 && matching.getMatchingType().getTitle() == "복식") {
+    if (matching.getPlayerNumber() == 4 && matching.getMatchingType().getTitle().equals("복식")) {
       matching.setMatchingCondition(MatchingCondition.DONE);
     }
   }
@@ -139,5 +140,14 @@ public class Matching {
   public void updateMatchingResult(ResultAddForm resultAddForm, Matching matching) {
     matching.setId(resultAddForm.getId());
     matching.setGameResult(resultAddForm.getGameResult());
+  }
+
+  public void matchingOngoingCheck(Matching matching) {
+    matching.setMatchingStatus(MatchingStatus.ONGOING);
+
+  }
+
+  public void matchingAfterCheck(Matching matching) {
+    matching.setMatchingStatus(MatchingStatus.AFTER);
   }
 }

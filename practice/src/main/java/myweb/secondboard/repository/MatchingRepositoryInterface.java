@@ -2,6 +2,7 @@ package myweb.secondboard.repository;
 
 import myweb.secondboard.domain.Matching;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface MatchingRepositoryInterface {
@@ -13,4 +14,9 @@ public interface MatchingRepositoryInterface {
   void increasePlayerNumber(Long matchingId);
 
   void matchingCondtionCheck(Long matchingId);
+
+  void matchingOngoingCheck(Long matchingId);
+
+  void matchingAfterCheck(Long matchingId);
+
 }

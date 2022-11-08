@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -66,6 +70,29 @@ public class MatchingController {
 
     return "/matching/matchingHome";
   }
+
+//  @Async
+//  @Scheduled(cron="0/3 * * * * *")
+//  public void matchScheduleCheck() {
+////    LocalDate now = LocalDate.now();
+//    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+//
+//
+//
+//    System.out.println("스케줄러 테스트중");
+//
+//    if(matchingList1.)
+//    if(matching.getMatchingStartTime().equals(LocalDateTime.now().format(dtf))) {
+//      matching.setMatchingStatus(MatchingStatus.ONGOING);
+//      System.out.println("ONGOING 테스트중");
+//    }
+//
+//    if (matching.getMatchingStartTime().equals(LocalDateTime.now().format(dtf))) {
+//      matching.setMatchingStatus(MatchingStatus.AFTER);
+//      System.out.println("AFTER 테스트중");
+//    }
+//  }
+
 
   @PostMapping("/new")
   public String matchingAdd(@Validated @ModelAttribute("matching") MatchingSaveForm form,

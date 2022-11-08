@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,10 +38,14 @@ public class MatchingService {
     return matchingRepository.findAll(pageable);
   }
 
-  @Transactional
-  public List<Player> getPlayerList(Long matchingId) {
-    return playerRepository.findAllByMatchingId(matchingId);
+  public List<Matching> getMatchingList() {
+    return matchingRepository.findAll();
   }
+
+//  @Transactional
+//  public HashMap<Long, String> timeCheck() {
+//    return matchingRepository.timecheck();
+//  }
 
   // 매칭 등록
   @Transactional
