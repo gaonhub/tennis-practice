@@ -21,7 +21,7 @@ public class SchedulerService {
   private final MatchingRepository matchingRepository;
 
   @Async
-  @Scheduled(cron = "0 0/5 * * * *")
+  @Scheduled(cron = "0 0/10 * * * *")
   @Transactional
   public void matchScheduleCheck() {
 

@@ -47,7 +47,7 @@ public class Matching {
 
   @NotNull
   @Column(length = 40)
-  private LocalDate matchingDate;
+  private String matchingDate;
 
   @NotNull
   @Column(length = 40)
@@ -144,7 +144,6 @@ public class Matching {
 
   public void matchingOngoingCheck(Matching matching) {
     matching.setMatchingStatus(MatchingStatus.ONGOING);
-
   }
 
   public void matchingAfterCheck(Matching matching) {

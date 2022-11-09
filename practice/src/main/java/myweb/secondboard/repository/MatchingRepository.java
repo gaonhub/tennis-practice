@@ -2,8 +2,7 @@ package myweb.secondboard.repository;
 
 import myweb.secondboard.domain.ClubMember;
 import myweb.secondboard.domain.Matching;
-import myweb.secondboard.dto.ScheduleForm;
-import myweb.secondboard.dto.ScheduleMatching;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
