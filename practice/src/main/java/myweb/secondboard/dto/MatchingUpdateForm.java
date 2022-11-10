@@ -23,9 +23,9 @@ public class MatchingUpdateForm {
   @NotNull @Size(min = 1, max = 40, message = "장소은 1 ~ 40자 이내여야 합니다.")
   private String place;
 
-//  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
   @NotNull(message = "매칭 날짜를 선택해주세요.")
-  private String matchingDate;
+  private LocalDate matchingDate;
 
   @NotNull(message = "매칭 시작 시간을 선택해주세요.")
   private String matchingStartTime;
@@ -38,6 +38,9 @@ public class MatchingUpdateForm {
 
   @NotNull(message = "코트 종류를 선택해주세요.")
   private CourtType courtType;
+
+  private String lat;
+  private String lng;
 
   @Override
   public String toString() {

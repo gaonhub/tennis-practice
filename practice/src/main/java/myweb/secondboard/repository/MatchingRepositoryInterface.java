@@ -2,7 +2,6 @@ package myweb.secondboard.repository;
 
 import myweb.secondboard.domain.Matching;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface MatchingRepositoryInterface {
@@ -19,4 +18,7 @@ public interface MatchingRepositoryInterface {
 
   void matchingAfterCheck(Long matchingId);
 
+  void matchingBeforeHourCheck(Long matchingId);
+
+  void matchingAfterWeek(Long matchingId);
 }

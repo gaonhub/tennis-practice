@@ -19,8 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,10 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Controller
@@ -42,7 +37,6 @@ import java.util.Map;
 public class MatchingController {
 
   private final MatchingService matchingService;
-
   private final PlayerService playerService;
 
   @GetMapping("/home")
@@ -72,48 +66,20 @@ public class MatchingController {
     return "/matching/matchingHome";
   }
 
-//  @Async
-//  @Scheduled(cron="0/3 * * * * *")
-//  public void matchScheduleCheck() {
-////    LocalDate now = LocalDate.now();
-//    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
-//
-//
-//
-//    System.out.println("스케줄러 테스트중");
-//
-//    if(matchingList1.)
-//    if(matching.getMatchingStartTime().equals(LocalDateTime.now().format(dtf))) {
-//      matching.setMatchingStatus(MatchingStatus.ONGOING);
-//      System.out.println("ONGOING 테스트중");
-//    }
-//
-//    if (matching.getMatchingStartTime().equals(LocalDateTime.now().format(dtf))) {
-//      matching.setMatchingStatus(MatchingStatus.AFTER);
-//      System.out.println("AFTER 테스트중");
-//    }
-//  }
-
-
   @PostMapping("/new")
-  @ResponseBody
-  public Map<String,Object> matchingAdd(@RequestParam(value = "matchingForm") Map<String, Object> map, HttpServletRequest request) {
-    Map<String, Object> map2 = new HashMap<String, Object>();
+  public String matchingAdd(@Validated @ModelAttribute("matching") MatchingSaveForm form,
+                            BindingResult bindingResult, HttpServletRequest request) {
 
-    System.out.println(map.get("title"));
-    System.out.println(map.get("startDate"));
-    System.out.println(map.get("endDate"));
-    System.out.println(map.get("place"));
-    System.out.println(map.get("matchingType"));
-    System.out.println(map.get("courtType"));
+    Member member = (Member) request.getSession(false)
+      .getAttribute(SessionConst.LOGIN_MEMBER);
 
-//    Member member = (Member) request.getSession(false)
-//      .getAttribute(SessionConst.LOGIN_MEMBER);
-//
-//
-//    Long matchingId = matchingService.addMatching(form, member);
-//    return "redirect:/matching/detail/" + matchingId;
-    return map2;
+    if (bindingResult.hasErrors()) {
+      log.info("errors = {}", bindingResult);
+      return "redirect:/matching/home";
+    }
+
+    Long matchingId = matchingService.addMatching(form, member);
+    return "redirect:/matching/detail/" + matchingId;
   }
 
   @GetMapping("/detail/{matchingId}")
@@ -157,6 +123,8 @@ public class MatchingController {
     matchingForm.setMatchingStartTime(matching.getMatchingStartTime());
     matchingForm.setMatchingEndTime(matching.getMatchingEndTime());
     matchingForm.setMatchingType(matching.getMatchingType());
+    matchingForm.setLat(matching.getLat());
+    matchingForm.setLng(matching.getLng());
     model.addAttribute("matchingForm", matchingForm);
 
     return "/matching/matchingDetail";

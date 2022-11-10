@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -19,7 +18,6 @@ public class MatchingRepositoryImpl implements MatchingRepositoryInterface{
   public List<Matching> findAll() {
     return em.createQuery("select m from Matching m", Matching.class).getResultList();
   }
-
 
   public Matching findOne(Long matchingId) {
     return em.find(Matching.class, matchingId);
@@ -45,5 +43,15 @@ public class MatchingRepositoryImpl implements MatchingRepositoryInterface{
   public void matchingAfterCheck(Long matchingId) {
     Matching matching = findOne(matchingId);
     matching.matchingAfterCheck(matching);
+  }
+
+  public void matchingBeforeHourCheck(Long matchingId) {
+    Matching matching = findOne(matchingId);
+    matching.matchingBeforeHourCheck(matching);
+  }
+
+  public void matchingAfterWeek(Long matchingId) {
+    Matching matching = findOne(matchingId);
+    matching.matchingAfterWeek(matching);
   }
 }

@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import myweb.secondboard.domain.*;
+import myweb.secondboard.domain.Record;
 import myweb.secondboard.repository.*;
 import myweb.secondboard.web.*;
 import org.springframework.boot.CommandLineRunner;
@@ -64,7 +65,7 @@ public class SecondboardApplication {
 //				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 //				board.setTitle("test" + i);
 //				board.setAuthor(member.getNickname());
-//				board.setContent("test" + i + "게시글 내용 입니다....");
+//				board.setContent("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.");
 //				board.setViews(0);
 //				board.setCreatedDate(LocalDateTime.now().format(dtf));
 //				board.setModifiedDate(LocalDateTime.now().format(dtf));
@@ -82,10 +83,6 @@ public class SecondboardApplication {
 //
 //				boardRepository.save(board);
 //				commentRepository.save(comment);
-//
-//
-//
-//
 //
 //			} catch (Exception e) {
 //				e.printStackTrace();
@@ -164,9 +161,11 @@ public class SecondboardApplication {
 //				matching.setMatchingEndTime("18:30");
 //				matching.setMatchingType(MatchingType.DOUBLE);
 //				matching.setCourtType(CourtType.INDOOR);
-//				matching.setPlace("서울올림픽 경기장");
+//				matching.setPlace("한남테니스장");
 //				matching.setMember(member);
 //				matching.setMatchingCondition(MatchingCondition.AVAILABLE);
+//				matching.setLat("37.546108538841295");
+//				matching.setLng("127.00368899119701");
 //
 //			} else if (i % 2 == 1) {
 //				matching.setTitle("매치 test" + i);
@@ -176,9 +175,11 @@ public class SecondboardApplication {
 //				matching.setMatchingEndTime("15:30");
 //				matching.setMatchingType(MatchingType.SINGLE);
 //				matching.setCourtType(CourtType.OUTDOOR);
-//				matching.setPlace("수원올림픽 경기장");
+//				matching.setPlace("한남테니스장");
 //				matching.setMember(member);
 //				matching.setMatchingCondition(MatchingCondition.AVAILABLE);
+//				matching.setLat("37.546108538841295");
+//				matching.setLng("127.00368899119701");
 //			}
 //			matchRepository.save(matching);
 //

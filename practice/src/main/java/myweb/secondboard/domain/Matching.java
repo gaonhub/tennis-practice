@@ -26,7 +26,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter @Setter
 @NoArgsConstructor
 @DynamicInsert
-public class Matching {
+public class
+Matching {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -47,7 +48,7 @@ public class Matching {
 
   @NotNull
   @Column(length = 40)
-  private String matchingDate;
+  private LocalDate matchingDate;
 
   @NotNull
   @Column(length = 40)
@@ -80,12 +81,17 @@ public class Matching {
   @Enumerated(EnumType.STRING)
   private MatchingStatus matchingStatus;
 
+  private String beforeHour;
+
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
   @Enumerated(EnumType.STRING)
   private GameResult gameResult;
+
+  private String lat;
+  private String lng;
 
   public static Matching createMatching(MatchingSaveForm form, Member member) {
     Matching matching = new Matching();
@@ -102,13 +108,17 @@ public class Matching {
     matching.setMatchingType(form.getMatchingType());
     matching.setMatchingCondition(MatchingCondition.AVAILABLE);
     matching.setMatchingStatus(MatchingStatus.BEFORE);
+    matching.setBeforeHour(form.getBeforeHour());
     matching.setPlayerNumber(matching.getPlayerNumber());
     matching.setMember(member);
+    matching.setLat(form.getLat());
+    matching.setLng(form.getLng());
+
     return matching;
   }
 
   public void updateMatching(Matching matching, MatchingUpdateForm form, Member member) {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 
     matching.setId(form.getId());
     matching.setTitle(form.getTitle());
@@ -121,7 +131,8 @@ public class Matching {
     matching.setMatchingType(form.getMatchingType());
     matching.setModifiedDate(LocalDateTime.now().format(dtf));
     matching.setMember(member);
-
+    matching.setLat(form.getLat());
+    matching.setLng(form.getLng());
   }
 
   public void increasePlayerNumber(Matching matching) {
@@ -129,10 +140,10 @@ public class Matching {
   }
 
   public void matchingConditionCheck(Matching matching) {
-    if (matching.getPlayerNumber() == 2 && matching.getMatchingType().getTitle().equals("단식")) {
+    if (matching.getPlayerNumber() == 2 && matching.getMatchingType().getTitle() == "단식") {
       matching.setMatchingCondition(MatchingCondition.DONE);
     }
-    if (matching.getPlayerNumber() == 4 && matching.getMatchingType().getTitle().equals("복식")) {
+    if (matching.getPlayerNumber() == 4 && matching.getMatchingType().getTitle() == "복식") {
       matching.setMatchingCondition(MatchingCondition.DONE);
     }
   }
@@ -148,5 +159,11 @@ public class Matching {
 
   public void matchingAfterCheck(Matching matching) {
     matching.setMatchingStatus(MatchingStatus.AFTER);
+  }
+
+  public void matchingBeforeHourCheck(Matching matching) { matching.setMatchingStatus(MatchingStatus.HOURBEFORE);
+  }
+
+  public void matchingAfterWeek(Matching matching) { matching.setMatchingStatus(MatchingStatus.WEEKAFTER);
   }
 }
