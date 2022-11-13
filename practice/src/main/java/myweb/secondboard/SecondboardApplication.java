@@ -1,17 +1,15 @@
 package myweb.secondboard;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import myweb.secondboard.domain.*;
-import myweb.secondboard.domain.Record;
+import myweb.secondboard.domain.boards.Lesson;
+import myweb.secondboard.domain.boards.Notice;
+import myweb.secondboard.domain.boards.Question;
 import myweb.secondboard.repository.*;
 import myweb.secondboard.web.*;
 import org.springframework.boot.CommandLineRunner;
@@ -26,8 +24,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.IntStream;
 
-import static myweb.secondboard.web.MatchingType.SINGLE;
-
 /**
  * 11월1일자 복구
  */
@@ -36,16 +32,21 @@ import static myweb.secondboard.web.MatchingType.SINGLE;
 @EnableAsync
 public class SecondboardApplication {
 
-  public static void main(String[] args){
+  public static void main(String[] args) {
     SpringApplication.run(SecondboardApplication.class, args);
   }
 
+	@Bean(name = "uploadPath")
+	public String uploadPath() {
+		return "/Users/gaon/git/tennis-project/secondboard/src/main/resources/static/files";
+  }
 
 //	@Order(1)
 //	@Bean
 //	public CommandLineRunner initData(MemberRepository memberRepository,
-//		BoardRepository boardRepository,
-//		CommentRepository commentRepository){
+//		BoardRepository boardRepository, CommentRepository commentRepository,
+//			LessonRepository lessonRepository, NoticeRepository noticeRepository,
+//			QuestionRepository questionRepository){
 //
 //		return args -> IntStream.rangeClosed(1, 154).forEach(i -> {
 //			try {
@@ -59,6 +60,7 @@ public class SecondboardApplication {
 //				member.setPhoneNumber("01021219" + String.format("%03d", i));
 //				member.setGender(Gender.MALE);
 //				member.setProvider(Provider.GOGOTENNIS);
+//				member.setRole(Role.MEMBER);
 //				memberRepository.save(member);
 //
 //				Board board = new Board();
@@ -71,6 +73,33 @@ public class SecondboardApplication {
 //				board.setModifiedDate(LocalDateTime.now().format(dtf));
 //				board.setMember(member);
 //
+//				Lesson lesson = new Lesson();
+//				lesson.setTitle("test" + i);
+//				lesson.setAuthor(member.getNickname());
+//				lesson.setContent("test lesson");
+//				lesson.setViews(0);
+//				lesson.setCreatedDate(LocalDateTime.now().format(dtf));
+//				lesson.setModifiedDate(LocalDateTime.now().format(dtf));
+//				lesson.setMember(member);
+//
+//				Notice notice = new Notice();
+//				notice.setTitle("test" + i);
+//				notice.setAuthor(member.getNickname());
+//				notice.setContent("test notice");
+//				notice.setViews(0);
+//				notice.setCreatedDate(LocalDateTime.now().format(dtf));
+//				notice.setModifiedDate(LocalDateTime.now().format(dtf));
+//				notice.setMember(member);
+//
+//				Question question = new Question();
+//				question.setTitle("test" + i);
+//				question.setAuthor(member.getNickname());
+//				question.setContent("test question");
+//				question.setViews(0);
+//				question.setCreatedDate(LocalDateTime.now().format(dtf));
+//				question.setModifiedDate(LocalDateTime.now().format(dtf));
+//				question.setMember(member);
+//
 //				Comment comment = new Comment();
 //				comment.setContent("testtest" + i);
 //				comment.setAuthor(member.getNickname());
@@ -82,6 +111,9 @@ public class SecondboardApplication {
 //				board.setComments(commentRepository.findComments(board.getId()));
 //
 //				boardRepository.save(board);
+//				lessonRepository.save(lesson);
+//				noticeRepository.save(notice);
+//				questionRepository.save(question);
 //				commentRepository.save(comment);
 //
 //			} catch (Exception e) {
@@ -190,6 +222,24 @@ public class SecondboardApplication {
 //
 //		});
 //	}
-
+//
+//  @Order(4)
+//  @Bean
+//  public CommandLineRunner initAdminMember(MemberRepository memberRepository) {
+//    return  args -> {
+//      Member member = new Member();
+//      PasswordEncrypt passwordEncrypt = new PasswordEncrypt();
+//      member.setLoginId("adminadmin");
+//      member.setPassword(passwordEncrypt.encrypt("adminadmin!"));
+//      member.setNickname("admin");
+//      member.setEmail("admin" + "@gmail.com");
+//      member.setBirthday("19951126");
+//      member.setPhoneNumber("01087524626");
+//      member.setGender(Gender.MALE);
+//      member.setProvider(Provider.GOGOTENNIS);
+//      member.setRole(Role.ADMIN);
+//      memberRepository.save(member);
+//    };
+//  }
 
 }

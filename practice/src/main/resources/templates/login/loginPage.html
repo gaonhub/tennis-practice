@@ -2,6 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: header(~{::link}, ~{:://head/script})}">
 
+  <!--Google Login-->
+  <meta name="google-signin-client_id" content="8895148262-cnn66uuetekji9aiemu7l6dgpkcsf8nd.apps.googleusercontent.com">
+  <meta name="referrer" content="origin" />
+<!--  <meta name="Cross-Origin-Opener-Policy" content="same-origin-allow-popups" />-->
   <!-- loginPage 에서만 쓸 link-->
   <link href="/css/header-style.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/loginForm.css">
@@ -72,11 +76,24 @@
             th:onclick="|location.href='@{https://kauth.kakao.com/oauth/authorize?client_id=b70b62ddd16773ad4e495c5aa49dc006&redirect_uri=http://localhost:8080/oauth/kakao&response_type=code}'|">
       <i class="bi bi-chat-fill"></i>카카오 로그인
     </button>
+
+
+
+    <!--Google Login-->
+    <div id="buttonDiv"></div>
+
+
+
   </div>
 </div> <!--wrap end-->
+
 <footer th:replace="fragments/footer :: footer"></footer>
 </div> <!-- container end-->
 
+
+<!--Google Login-->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="/js/googleLogin.js"></script>
 <!-- Id 저장 -->
 <script th:src="@{/js/IdSave.js}"></script>
 </body>
