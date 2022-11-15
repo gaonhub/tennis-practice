@@ -55,7 +55,6 @@ public class Member implements Serializable {
   @Enumerated(EnumType.STRING)
   private Role role;
 
-
   @OneToOne
   @JoinColumn(name = "record_id")
   private Record record;

@@ -165,35 +165,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>4</td><td>User4</td><td>1682</td><td>61%</td>
-        </tr>
-        <tr>
-            <td>5</td><td>User5</td><td>1634</td><td>60%</td>
-        </tr>
-        <tr>
-            <td>6</td><td>User6</td><td>1521</td><td>57%</td>
-        </tr>
-        <tr>
-            <td>7</td><td>User7</td><td>1479</td><td>55%</td>
-        </tr>
-        <tr>
-            <td>8</td><td>User8</td><td>1411</td><td>53%</td>
-        </tr>
-        <tr>
-            <td>9</td><td>User9</td><td>1328</td><td>52%</td>
-        </tr>
-        <tr>
-            <td>10</td><td>User10</td><td>1290</td><td>51%</td>
-        </tr>
-        <tr>
-            <td>11</td><td>User11</td><td>1128</td><td>49%</td>
-        </tr>
-        <tr>
-            <td>12</td><td>User12</td><td>1065</td><td>47%</td>
-        </tr>
-        <tr>
-            <td>13</td><td>User13</td><td>998</td><td>45%</td>
+        <tr th:each="member: ${members}">
+            <td>4</td>
+            <td th:text="${member.nickname}">닉네임</td>
+            <td th:text="${member.record.points}">점수</td>
+            <td th:text="${member.record.rate}">승률</td>
         </tr>
         </tbody>
     </table>

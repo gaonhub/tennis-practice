@@ -14,4 +14,13 @@ $(document).ready(function () {
             $(".card_area[title=" + selectedCategory + "]").show();
         }
     });
+
+    let no = $('.rankNo').text();
+    console.log(no);
+    let plusNo = no + 1;
+    console.log(plusNo);
+    $('.rankNo').attr("text", plusNo)
 });
+
+
+

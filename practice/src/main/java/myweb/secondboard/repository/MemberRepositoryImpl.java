@@ -34,4 +34,6 @@ public class MemberRepositoryImpl {
   public Optional<Member> findByPhoneNum(String phoneNum) {
     return findAll().stream().filter(m -> m.getPhoneNumber().equals(phoneNum)).findFirst();
   }
+
+
 }
