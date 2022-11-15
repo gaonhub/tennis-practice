@@ -28,28 +28,28 @@
   <section class="primary">
     <div class="container">
       <br>
-      <h3 style="text-align: center" th:text="${board.title}"></h3>
+      <h3 style="text-align: center" th:text="${lesson.title}"></h3>
       <div class="d-flex justify-content-between" id="board_title_box">
         <div>
           <img th:src="@{/images/user.png}" alt="logo" height="15" width="20">
-          <a th:text="${board.author}"></a>
+          <a th:text="${lesson.author}"></a>
           <img th:src="@{/images/clock.png}" alt="logo" height="15" width="20">
-          <a th:text="${board.createdDate}"></a>
+          <a th:text="${lesson.createdDate}"></a>
           <img th:src="@{/images/views.png}" alt="logo" height="10" width="20">
-          <a th:text="${board.views}"></a>
+          <a th:text="${lesson.views}"></a>
         </div>
         <div th:if="${session.loginMember != null}">
-          <div th:if="${session.loginMember.id == board.member.id}" style="display: inline-block">
-            <form class="col" role="form" th:action="@{/boards/update/{id} (id=${board.id})}"
+          <div th:if="${session.loginMember.id == lesson.member.id}" style="display: inline-block">
+            <form class="col" role="form" th:action="@{/lesson/update/{id} (id=${lesson.id})}"
                   method="get">
               <button class="btn-outline-success border-0 shadow-sm" style="background: none"
-                      type="submit" id="board_update_button">게시글 수정</button>
+                      type="submit" id="board_update_button">레슨 수정</button>
             </form>
           </div>
-          <div th:if="${session.loginMember.id == board.member.id} or ${session.loginMember.role.toString() == 'ADMIN'}"
+          <div th:if="${session.loginMember.id == lesson.member.id} or ${session.loginMember.role.toString() == 'ADMIN'}"
                style="display: inline-block">
             <button class="btn-outline-danger border-0 shadow-sm" style="background: none"
-                    th:onclick="deleteBoard([[${board.id}]])" id="board_delete_button">게시글 삭제</button>
+                    th:onclick="deleteNotice([[${lesson.id}]])" id="board_delete_button">레슨 삭제</button>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
 
       <div class="d-flex justify-content-center" id="board_content_box">
         <div id="summernote" class="board-content"> <!-- 게시글 본문 -->
-          <p th:utext="${board.content}"></p>
+          <p th:utext="${lesson.content}"></p>
           <br>
           <br>
         </div> <!-- 게시글 본문 끝 -->
@@ -171,7 +171,7 @@
                 <div class="w-100">
                   <div th:if="${session.loginMember != null}">   <!-- 댓글 입력 창 -->
                     <div class="comment-input-body">
-                      <input hidden id="board-id" th:value="${board.id}">
+                      <input hidden id="board-id" th:value="${lesson.id}">
                       <textarea id="comment" class="form-control" rows="4"
                                 placeholder="댓글을 입력하세요"></textarea>
                     </div>
@@ -196,16 +196,16 @@
     <br>
     <ul class="info-list">
       <li class="info-list-item">
-        <a href="#" class="info-list-a">자유게시판</a>
+        <a class="info-list-a" th:onclick="|location.href='@{/boards/home}'|">자유게시판</a>
       </li>
       <li class="info-list-item">
-        <a href="#" class="info-list-a">공지사항</a>
+        <a class="info-list-a" th:onclick="|location.href='@{/notice/home}'|">공지사항</a>
       </li>
       <li class="info-list-item">
-        <a href="#" class="info-list-a">레슨 찾아요</a>
+        <a class="info-list-a" th:onclick="|location.href='@{/lesson/home}'|">레슨 찾아요</a>
       </li>
       <li class="info-list-item">
-        <a href="#" class="info-list-a">동호회</a>
+        <a class="info-list-a" th:onclick="|location.href='@{/question/home}'|">Q&A</a>
       </li>
     </ul>
   </aside>
@@ -255,5 +255,5 @@
   <br>
 </div>
 </body>
-<script th:src="@{/js/boardDetailPage.js}"></script>
+<script th:src="@{/js/lessonDetailPage.js}"></script>
 </html>

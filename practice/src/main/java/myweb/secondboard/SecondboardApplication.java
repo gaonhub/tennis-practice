@@ -38,7 +38,7 @@ public class SecondboardApplication {
 
 	@Bean(name = "uploadPath")
 	public String uploadPath() {
-		return "/Users/gaon/git/tennis-project/secondboard/src/main/resources/static/files";
+		return "/Users/seph/Documents/Dev/git/tennis-project/secondboard/src/main/resources/static/files";
   }
 
 //	@Order(1)
@@ -65,7 +65,7 @@ public class SecondboardApplication {
 //
 //				Board board = new Board();
 //				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-//				board.setTitle("test" + i);
+//				board.setTitle("자유게시판 " + i);
 //				board.setAuthor(member.getNickname());
 //				board.setContent("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.");
 //				board.setViews(0);
@@ -74,7 +74,7 @@ public class SecondboardApplication {
 //				board.setMember(member);
 //
 //				Lesson lesson = new Lesson();
-//				lesson.setTitle("test" + i);
+//				lesson.setTitle("레슨 " + i);
 //				lesson.setAuthor(member.getNickname());
 //				lesson.setContent("test lesson");
 //				lesson.setViews(0);
@@ -83,7 +83,7 @@ public class SecondboardApplication {
 //				lesson.setMember(member);
 //
 //				Notice notice = new Notice();
-//				notice.setTitle("test" + i);
+//				notice.setTitle("공지사항 " + i);
 //				notice.setAuthor(member.getNickname());
 //				notice.setContent("test notice");
 //				notice.setViews(0);
@@ -92,7 +92,7 @@ public class SecondboardApplication {
 //				notice.setMember(member);
 //
 //				Question question = new Question();
-//				question.setTitle("test" + i);
+//				question.setTitle("Q&A " + i);
 //				question.setAuthor(member.getNickname());
 //				question.setContent("test question");
 //				question.setViews(0);

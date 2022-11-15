@@ -20,31 +20,32 @@
 </head>
 <body>
   <div class="container">   <!-- Container Start -->
-
     <nav th:replace="fragments/bodyheader :: bodyHeader"></nav>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+    <div class="board"> <!-- board start -->
 
       <div class="board-main"> <!-- Board Main Start -->
         <h4>글쓰기</h4>
-        <form role="form" th:object="${board}" action="/boards/new" method="post">
+        <form role="form" th:object="${form}"  method="post">
+          <input type="hidden" th:field="*{id}" th:action="@{/boards/update/{id} (id=${form.id})}">
           <div class="form-group">
             <label th:for="title"></label>
-            <input id="title" type="text" class="form-control" th:field="${board.title}"
-                   placeholder="제목을 입력해주세요." />
-            <div class="field-error" th:errors="${board.title}"></div>
+            <input id="title" type="text" class="form-control" name="title"
+                   th:value="${form.title}"/>
+            <div class="field-error" th:errors="${form.title}"></div>
           </div>
           <div class="form-group">
             <label th:for="content"></label>
-            <textarea id="summernote" type="text" class="form-control" th:field="${board.content}"
-                      placeholder="내용을 입력해주세요."></textarea>
-            <div class="field-error" th:errors="${board.content}"></div>
+            <textarea id="summernote" type="text" class="form-control" name="content"
+                      th:text="${form.content}"></textarea>
+            <div class="field-error" th:errors="${form.content}"></div>
           </div>
-          <button type="submit" class="button-submit" id="board-submit">등록하기</button>
+          <button type="submit" class="button-submit" id="board-submit">수정하기</button>
         </form>
       </div> <!-- Board Main End -->
 

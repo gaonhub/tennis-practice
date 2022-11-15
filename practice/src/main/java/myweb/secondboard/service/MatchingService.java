@@ -1,5 +1,6 @@
 package myweb.secondboard.service;
 
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import myweb.secondboard.domain.*;
 import myweb.secondboard.domain.Record;
@@ -93,6 +94,14 @@ public class MatchingService {
   public void resultTempAdd(ResultAddForm result, Member member) {
     Optional<Player> player = playerRepository.exist(result.getId(), member.getId());
     resultTempRepository.save(ResultTemp.createResultTemp(result, player.get()));
+  }
+
+  public List<Matching> findAll() {
+    return matchingRepository.findAll();
+  }
+
+  public List<Matching> findAllByDate(LocalDate date) {
+    return matchingRepository.findAllByDate(date);
   }
 }
 

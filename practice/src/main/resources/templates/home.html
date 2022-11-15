@@ -3,9 +3,6 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <!--Google Login-->
-  <meta name="google-signin-client_id" content="8895148262-cnn66uuetekji9aiemu7l6dgpkcsf8nd.apps.googleusercontent.com">
-  <meta name="referrer" content="no-referrer-when-downgrade" />
   <title>Tennis</title>
   <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
   <!-- Google fonts-->
@@ -136,14 +133,7 @@
                     th:onclick="|location.href='@{https://kauth.kakao.com/oauth/authorize?client_id=b70b62ddd16773ad4e495c5aa49dc006&redirect_uri=http://localhost:8080/oauth/kakao&response_type=code}'|">
               <i class="bi bi-chat-fill"></i>카카오 로그인
             </button>
-
-
-
-            <div id="buttonDiv"></div>
-<!--            <a href="#" onclick="signOut();">구글 로그아웃</a>-->
           </div>
-
-
         </div> <!--wrap end-->
       </div>
 
@@ -300,10 +290,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 <!-- JS-->
-<!--Google Login-->
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="/js/googleLogin.js"></script>
 <script src="/js/mainNavbar.js"></script>
 <script src="/js/dateCarousel.js"></script>
 <script th:src="@{/js/IdSave.js}"></script>
