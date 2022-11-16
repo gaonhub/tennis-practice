@@ -36,8 +36,8 @@
 
 <div class="container">
 
-    <h6 class="p-3 mb-2 bg-primary text-white">매칭 상세 정보</h6>
-    <div class="matching-header"> <!-- 매칭 헤더 -->
+    <h6 class="p-3 mb-2 bg-primary text-white">매치 상세 정보</h6>
+    <div class="matching-header"> <!-- 매치 헤더 -->
         <h3 th:text="${matching.title}"></h3>
         <table>
             <thead>
@@ -61,7 +61,7 @@
 
     <table th:border="1">
         <tr>
-            <th>매칭 날짜</th>
+            <th>매치 날짜</th>
             <td><a th:text="${matching.matchingDate}"></a></td>
         </tr>
         <tr>
@@ -73,7 +73,7 @@
             <td><a id="end" th:text="${matching.matchingEndTime}"></a></td>
         </tr>
         <tr>
-            <th>매칭 종류</th>
+            <th>매치 종류</th>
             <td><a th:text="${matching.matchingType.title}"></a></td>
         </tr>
         <tr>
@@ -81,7 +81,7 @@
             <td><a th:text="${matching.courtType.title}"></a></td>
         </tr>
         <tr>
-            <th>매칭 장소</th>
+            <th>매치 장소</th>
             <td><a th:text="${matching.place}"></a></td>
         </tr>
     </table>
@@ -91,20 +91,154 @@
     <img src="/images/match2.png" class="w-100">
     <div class="row d-flex justify-content-center my-3">
         <div class="col-4 text-center d-flex justify-content-center flex-shrink-0" style="border-radius: 40px;">
-            <div th:each="a:${playersA}">
+            <div th:each="a : ${playersA}" th:attr="data-bs-target='#teamAInfoModal' + ${a.id}" data-bs-toggle="modal">
                 <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>
                 <p class="mt-1 small" th:text="${a.member.nickname}">사용자1</p>
+
+                <!-- A팀 참가자 Modal -->
+                <div class="modal fade" th:id="teamAInfoModal + ${a.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-2" id="teamAInfoModalLabel">Information</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>정보</h4>
+                                <div class="row">
+                                    <div class="col total">
+                                        <img class="rounded-circle mt-2 px-1 py-1" width="200" height="200" src="/images/yujin3.jpg">
+                                    </div>
+                                    <div class="col total text-center mt-5">
+                                        <div th:text="${a.member.nickname}">USER1</div>
+                                        <div th:text="${a.member.birthday}">생년월일</div>
+                                        <div th:text="${a.member.email}">이메일</div>
+                                        <div th:text="${a.member.introduction}">자기소개</div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h4>등급</h4>
+                                <div class="text-center">
+                                    <img height="100" src="/images/platinum.png" alt=""/>
+                                    <h3><span class="tier" th:text="${a.member.tier}">IRON</span></h3>
+                                </div>
+                                <div class="container text-center">
+                                    <div class="row">
+                                        <div class="col total">
+                                            <h4><span>총 전적</span></h4>
+                                            <li style="list-style: none" th:text="${a.member.record.win} + '승' + ${a.member.record.lose} + '패'" >13승 2패</li>
+                                        </div>
+                                        <div class="col total">
+                                            <h4><strong>승점</strong></h4>
+                                            <li style="list-style: none" th:text="${a.member.record.points} + '점'">13점</li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h4>최근 전적 현황</h4>
+                                <table class="table table-hover align-middle bg-white mt-2">
+                                    <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-center">승/패</th>
+                                        <th class="text-center">매치 이름</th>
+                                        <th class="text-center">매치 타입</th>
+                                        <th class="text-center">경기 날짜</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center">패배</td>
+                                        <td class="text-center">매치이름</td>
+                                        <td class="text-center">매치타입</td>
+                                        <td class="text-center">경기날짜</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- A팀 참가자 Modal 끝 -->
+
             </div>
             <div th:if="${matching.matchingType.title.equals('복식') and playersA.size() < 2}">
                 <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>
                 <p class="mt-1 small">비어있음</p>
             </div>
         </div>
+
         <div class="col-2 flex-shrink-1"></div>
         <div class="col-4 text-center d-flex justify-content-center flex-shrink-0" style="border-radius: 40px;">
-            <div th:each="b:${playersB}">
+            <div th:each="b:${playersB}" th:attr="data-bs-target='#teamBInfoModal' + ${b.id}" data-bs-toggle="modal">
                 <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>
                 <p class="mt-1 small" th:text="${b.member.nickname}">사용자3</p>
+
+
+                <!-- B팀 참가자 Modal -->
+                <div class="modal fade" th:id="teamBInfoModal + ${b.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-2" id="teamBInfoModalLabel">Information</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>정보</h4>
+                                <div class="row">
+                                    <div class="col total">
+                                        <img class="rounded-circle mt-2 px-1 py-1" width="200" height="200" src="/images/yujin3.jpg">
+                                    </div>
+                                    <div class="col total text-center mt-5">
+                                        <div th:text="${b.member.nickname}">USER1</div>
+                                        <div th:text="${b.member.birthday}">생년월일</div>
+                                        <div th:text="${b.member.email}">이메일</div>
+                                        <div th:text="${b.member.introduction}">자기소개</div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h4>등급</h4>
+                                <div class="text-center">
+                                    <img height="100" src="/images/platinum.png" alt=""/>
+                                    <h3><span class="tier" th:text="${b.member.tier}">IRON</span></h3>
+                                </div>
+                                <div class="container text-center">
+                                    <div class="row">
+                                        <div class="col total">
+                                            <h4><span>총 전적</span></h4>
+                                            <li style="list-style: none" th:text="${b.member.record.win} + '승' + ${b.member.record.lose} + '패'" >13승 2패</li>
+                                        </div>
+                                        <div class="col total">
+                                            <h4><strong>승점</strong></h4>
+                                            <li style="list-style: none" th:text="${b.member.record.points} + '점'">13점</li>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h4>최근 전적 현황</h4>
+                                <table class="table table-hover align-middle bg-white mt-2">
+                                    <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-center">승/패</th>
+                                        <th class="text-center">매치 이름</th>
+                                        <th class="text-center">매치 타입</th>
+                                        <th class="text-center">경기 날짜</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center">패배</td>
+                                        <td class="text-center">매치이름</td>
+                                        <td class="text-center">매치타입</td>
+                                        <td class="text-center">경기날짜</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- B팀 참가자 Modal 끝 -->
+
             </div>
             <div th:if="${playersB.size() == 0}">
                 <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>
@@ -115,10 +249,66 @@
                 <p class="mt-1 small">비어있음</p>
             </div>
         </div>
+
+
+        <!--내가 만든 A팀 조건-->
+<!--        <div class="col-4 text-center d-flex justify-content-center flex-shrink-0" style="border-radius: 40px;">-->
+<!--            <div th:if="${matching.matchingType.title.equals('단식')}">-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersA.get(0).member.nickname}">사용자1</p>-->
+<!--            </div>-->
+<!--            <div th:if="${matching.matchingType.title.equals('복식')} and ${playersA.size() < 2}">-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersA.get(0).member.nickname}">사용자1</p>-->
+<!--                <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small">비어있음</p>-->
+<!--            </div>-->
+<!--            <div th:if="${matching.matchingType.title.equals('복식')} and ${playersA.size() == 2}">-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersA.get(0).member.nickname}">사용자1</p>-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersA.get(1).member.nickname}">사용자1</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="col-2 flex-shrink-1"></div>-->
+
+<!--        내가 만든 B팀 조건-->
+<!--        <div class="col-4 text-center d-flex justify-content-center flex-shrink-0" style="border-radius: 40px;">-->
+<!--            <div th:if="${matching.matchingType.title.equals('단식')} and ${playersB.size() == 0}">-->
+<!--                <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small">비어있음</p>-->
+<!--            </div>-->
+<!--            <div th:if="${matching.matchingType.title.equals('단식')} and ${playersB.size() == 1}">-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersB.get(0).member.nickname}">사용자1</p>-->
+<!--            </div>-->
+<!--            <div th:if="${matching.matchingType.title.equals('복식')} and ${playersB.size() == 0}">-->
+<!--                <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small">비어있음</p>-->
+<!--                <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small">비어있음</p>-->
+<!--            </div>-->
+<!--            <div th:if="${matching.matchingType.title.equals('복식')} and ${playersB.size() == 1}">-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersB.get(0).member.nickname}">사용자1</p>-->
+<!--                <img src="/images/profile2.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small">비어있음</p>-->
+<!--            </div>-->
+<!--            <div th:if="${matching.matchingType.title.equals('복식')} and ${playersB.size() == 2}">-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersB.get(0).member.nickname}">사용자1</p>-->
+<!--                <img src="/images/profile.png" alt="" style="width: 200px; min-width: 100px" class="rounded-circle img-fluid"/>-->
+<!--                <p class="mt-1 small" th:text="${playersB.get(1).member.nickname}">사용자1</p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
     </div> <!--팀 정보 끝 -->
+
+
     <hr class="mt-4">
     <h6 class="fw-bolder">매치 소개</h6>
-    <p class="text-center py-5">
+    <p class="text-center py-5" th:text="${matching.content}">
         매치 소개 내용이 없습니다.
     </p>
     <hr class="mt-4">
@@ -139,14 +329,14 @@
              and (matching.matchingStatus.name().equals('TWOHOURBEFORE') or matching.matchingStatus.name().equals('BEFORE'))}">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teamModal">매치 신청</button>
             </div>
-            <!--매칭에 참가된 인원이면서 매칭 마감이 안된 경우-->
+            <!--매치에 참가된 인원이면서 매치 마감이 안된 경우-->
             <form th:action="@{/matching/delete/memberDelete/{id} (id=${matching.id})}" method="post">
                 <input hidden name="memberId" th:value="${session.loginMember.id}"/>
                 <input hidden name="matchingId" th:value="${matching.id}"/>
-                <!--매칭에 참가된 인원이면서 매칭 마감이 안된 경우-->
+                <!--매치에 참가된 인원이면서 매치 마감이 안된 경우-->
                 <div th:if="${playerMemberCheck != null and matching.matchingCondition.title == '신청가능' and session.loginMember.id != matching.member.id
                 and (matching.matchingStatus.name().equals('TWOHOURBEFORE') or matching.matchingStatus.name().equals('BEFORE'))}">
-                    <button type="submit" class="btn btn-primary">매칭 참가 취소</button>
+                    <button type="submit" class="btn btn-primary">매치 참가 취소</button>
                 </div>
             </form>
             <div th:if="${matching.matchingStatus.equals('AFTER') and session.loginMember == playerMemberCheck}">
@@ -164,7 +354,7 @@
     </div>
 </div>
 <input hidden id="matching_lat" th:value="${matchingForm.lat}">
-<input hidden id="matching_lng" th:value="${matchingForm.lng}">
+
 
 <!-- 매치 팀 선택 Modal -->
 <div class="modal fade" id="teamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -206,36 +396,207 @@
 </div>
 <!-- 팀선택 모달 끝 -->
 
-<!-- 매치결과 Modal -->
-<div class="modal fade" id="resultModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title fs-2" id="resultModalLabel">RESULT</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
 
-                <form th:action="@{/matching/result}" th:object="${resultForm}" method="POST">
-                    <input hidden th:field="${matching.id}">
-                    <div class="mb-3">
-                        <div class="form-label">게임 결과</div>
-                        <div th:each="gresult : ${results}" class="form-check form-check-inline">
-                            <input type="radio" th:field="*{gameResult}" th:value="${gresult.name()}" class="form-check-input">
-                            <label th:for="${#ids.prev('gameResult')}" th:text="${gresult.title}" class="form-check-label"></label>
-                        </div>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="submit" class="btn btn-primary">등록하기</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- 매치결과 모달 끝 -->
+
+
+<!--&lt;!&ndash; 참가자정보 Modal2 &ndash;&gt;-->
+<!--<div class="modal fade" id="singleInfoModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h3 class="modal-title fs-2" id="singleInfoModal2Label">Information</h3>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <h4>정보</h4>-->
+<!--                <div class="row">-->
+<!--                    <div class="col total">-->
+<!--                        <img class="rounded-circle mt-2 px-1 py-1" width="200" height="200" src="/images/yujin4.jpg">-->
+<!--                    </div>-->
+<!--                    <div class="col total text-center mt-5">-->
+<!--                        <div th:text="${playersB.get(0).member.nickname}">USER1</div>-->
+<!--                        <div th:text="${playersB.get(0).member.birthday}">생년월일</div>-->
+<!--                        <div th:text="${playersB.get(0).member.email}">이메일</div>-->
+<!--                        <div th:text="${playersB.get(0).member.introduction}">자기소개</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                <h4>등급</h4>-->
+<!--                <div class="text-center">-->
+<!--                    <img height="100" src="/images/platinum.png" alt=""/>-->
+<!--                    <h3><span class="tier" th:text="${playersB.get(0).member.tier}">SILVER</span></h3>-->
+<!--                </div>-->
+<!--                <div class="container text-center">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col total">-->
+<!--                            <h4><span>총 전적</span></h4>-->
+<!--                            <li style="list-style: none" th:text="${playersB.get(0).member.record.win} + '승' + ${playersA.get(0).member.record.lose} + '패'" >13승 2패</li>-->
+<!--                        </div>-->
+<!--                        <div class="col total">-->
+<!--                            <h4><strong>승점</strong></h4>-->
+<!--                            <li style="list-style: none" th:text="${playersB.get(0).member.record.points} + '점'">13점</li>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                <h4>최근 전적 현황</h4>-->
+<!--                <table class="table table-hover align-middle bg-white mt-2">-->
+<!--                    <thead class="bg-light">-->
+<!--                    <tr>-->
+<!--                        <th class="text-center">승/패</th>-->
+<!--                        <th class="text-center">매치 이름</th>-->
+<!--                        <th class="text-center">매치 타입</th>-->
+<!--                        <th class="text-center">경기 날짜</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td class="text-center">패배</td>-->
+<!--                        <td class="text-center">매치이름</td>-->
+<!--                        <td class="text-center">매치타입</td>-->
+<!--                        <td class="text-center">경기날짜</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!-- 참가자정보 Modal2 끝 -->
+
+
+<!-- 참가자정보 Modal3 -->
+<!--<div class="modal fade" id="singleInfoModal3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h3 class="modal-title fs-2" id="singleInfoModal3Label">Information</h3>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <h4>정보</h4>-->
+<!--                <div class="row">-->
+<!--                    <div class="col total">-->
+<!--                        <img class="rounded-circle mt-2 px-1 py-1" width="200" height="200" src="/images/yujin3.jpg">-->
+<!--                    </div>-->
+<!--                    <div class="col total text-center mt-5">-->
+<!--                        <div th:text="${playersA.get(1).member.nickname}">USER1</div>-->
+<!--                        <div th:text="${playersA.get(1).member.birthday}">생년월일</div>-->
+<!--                        <div th:text="${playersA.get(1).member.email}">이메일</div>-->
+<!--                        <div th:text="${playersA.get(1).member.introduction}">자기소개</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                <h4>등급</h4>-->
+<!--                <div class="text-center">-->
+<!--                    <img height="100" src="/images/platinum.png" alt=""/>-->
+<!--                    <h3><span class="tier" th:text="${playersA.get(1).member.tier}">IRON</span></h3>-->
+<!--                </div>-->
+<!--                <div class="container text-center">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col total">-->
+<!--                            <h4><span>총 전적</span></h4>-->
+<!--                            <li style="list-style: none" th:text="${playersA.get(1).member.record.win} + '승' + ${playersA.get(1).member.record.lose} + '패'" >13승 2패</li>-->
+<!--                        </div>-->
+<!--                        <div class="col total">-->
+<!--                            <h4><strong>승점</strong></h4>-->
+<!--                            <li style="list-style: none" th:text="${playersA.get(1).member.record.points} + '점'">13점</li>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                <h4>최근 전적 현황</h4>-->
+<!--                <table class="table table-hover align-middle bg-white mt-2">-->
+<!--                    <thead class="bg-light">-->
+<!--                    <tr>-->
+<!--                        <th class="text-center">승/패</th>-->
+<!--                        <th class="text-center">매치 이름</th>-->
+<!--                        <th class="text-center">매치 타입</th>-->
+<!--                        <th class="text-center">경기 날짜</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td class="text-center">패배</td>-->
+<!--                        <td class="text-center">매치이름</td>-->
+<!--                        <td class="text-center">매치타입</td>-->
+<!--                        <td class="text-center">경기날짜</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; 참가자정보 Modal3 끝 &ndash;&gt;-->
+
+<!--&lt;!&ndash; 참가자정보 Modal4 &ndash;&gt;-->
+<!--<div class="modal fade" id="singleInfoModal4" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h3 class="modal-title fs-2" id="singleInfoModal4Label">Information</h3>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <h4>정보</h4>-->
+<!--                <div class="row">-->
+<!--                    <div class="col total">-->
+<!--                        <img class="rounded-circle mt-2 px-1 py-1" width="200" height="200" src="/images/yujin3.jpg">-->
+<!--                    </div>-->
+<!--                    <div class="col total text-center mt-5">-->
+<!--                        <div th:text="${playersB.get(1).member.nickname}">USER1</div>-->
+<!--                        <div th:text="${playersB.get(1).member.birthday}">생년월일</div>-->
+<!--                        <div th:text="${playersB.get(1).member.email}">이메일</div>-->
+<!--                        <div th:text="${playersB.get(1).member.introduction}">자기소개</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                <h4>등급</h4>-->
+<!--                <div class="text-center">-->
+<!--                    <img height="100" src="/images/platinum.png" alt=""/>-->
+<!--                    <h3><span class="tier" th:text="${playersB.get(1).member.tier}">IRON</span></h3>-->
+<!--                </div>-->
+<!--                <div class="container text-center">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col total">-->
+<!--                            <h4><span>총 전적</span></h4>-->
+<!--                            <li style="list-style: none" th:text="${playersB.get(1).member.record.win} + '승' + ${playersA.get(1).member.record.lose} + '패'" >13승 2패</li>-->
+<!--                        </div>-->
+<!--                        <div class="col total">-->
+<!--                            <h4><strong>승점</strong></h4>-->
+<!--                            <li style="list-style: none" th:text="${playersB.get(1).member.record.points} + '점'">13점</li>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                <h4>최근 전적 현황</h4>-->
+<!--                <table class="table table-hover align-middle bg-white mt-2">-->
+<!--                    <thead class="bg-light">-->
+<!--                    <tr>-->
+<!--                        <th class="text-center">승/패</th>-->
+<!--                        <th class="text-center">매치 이름</th>-->
+<!--                        <th class="text-center">매치 타입</th>-->
+<!--                        <th class="text-center">경기 날짜</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td class="text-center">패배</td>-->
+<!--                        <td class="text-center">매치이름</td>-->
+<!--                        <td class="text-center">매치타입</td>-->
+<!--                        <td class="text-center">경기날짜</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!-- 참가자정보 Modal4 끝 -->
+
+
 
 <!-- 매치수정 모달 -->
 <div class="modal fade" id="matchUpdateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -250,12 +611,12 @@
                 <form th:action="@{/matching/update/{id} (id=${matchingForm.id})}" th:object="${matchingForm}" method="POST">
                     <input type="hidden" th:field="${matchingForm.id}">
                     <div class="mb-3">
-                        <label for="matchingTitle" class="form-label">매칭 이름<span class="text-danger">*</span></label>
+                        <label for="matchingTitle" class="form-label">매치 이름<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" th:field="${matchingForm.title}" id="matchingTitle" placeholder="매치 이름을 입력해주세요" required>
                         <div th:errors="${matchingForm.title}" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="matchingDate" class="form-label">매칭 날짜<span class="text-danger">*</span></label>
+                        <label for="matchingDate" class="form-label">매치 날짜<span class="text-danger">*</span></label>
                         <input type="date" class="form-control" th:field="${matchingForm.matchingDate}" id="matchingDate" placeholder="매치 날짜를 입력해주세요" required>
                         <div th:errors="${matchingForm.matchingDate}" class="text-danger"></div>
                     </div>
@@ -277,7 +638,16 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="matchingPlace" class="form-label">매칭 장소<span class="text-danger">*</span></label>
+                        <label for="matchingTitle" class="form-label">매치 소개<span
+                            class="text-danger">*</span></label>
+                        <textarea type="text" class="form-control" name="content" th:text="${matchingForm.content}"
+                                  id="matchingContent" placeholder="매치 소개를 입력해주세요"
+                                  style="height: 200px; resize: none;" required></textarea>
+                        <div th:errors="${matching.content}" class="text-danger"></div>
+                    </div>
+                    <div class="mb-3">
+                    <div class="mb-3">
+                        <label for="matchingPlace" class="form-label">매치 장소<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" th:field="${matching.place}"
                                id="matchingPlace" placeholder="매창 장소를 입력해주세요"
                                data-bs-toggle="modal" data-bs-target="#matchAddLocationModal"
@@ -306,7 +676,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="matchingPlace" class="form-label">매칭 장소<span class="text-danger">*</span></label>
+                    <label for="matchingPlace" class="form-label">매치 장소<span class="text-danger">*</span></label>
                     <div th:errors="${matching.place}" class="text-danger"></div>
                     <div class="map_wrap">
                         <div id="map_update" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
@@ -337,6 +707,34 @@
         </div>
     </div>
 </div>
+
+<!-- 매치결과 Modal -->
+<div class="modal fade" id="resultModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-2" id="resultModalLabel">RESULT</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+            <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="form-label">게임 결과</div>
+                        <div  class="form-check form-check-inline">
+                            <label class="form-check-label"></label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">등록하기</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 매치결과 모달 끝 -->
 
 
 

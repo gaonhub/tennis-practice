@@ -17,7 +17,6 @@ public class BoardLikeService {
   private final BoardLikeRepository boardLikeRepository;
 
   public Long getLikeCount(Long boardId) {
-//    return boardLikeRepository.findAll().stream().filter(like -> like.getBoard().getId() == boardId).toList().size();
     return boardLikeRepository.countByBoardId(boardId);
   }
 
@@ -37,10 +36,16 @@ public class BoardLikeService {
     if (likeCheck == null) {
       BoardLike like = BoardLike.createLike(board, member);
       boardLikeRepository.save(like);
+      board.setLikeCount(board.getLikeCount() + 1);
       return 1;
     } else {
       boardLikeRepository.delete(likeCheck);
+      board.setLikeCount(board.getLikeCount() - 1);
       return 0;
     }
+  }
+
+  public void deleteById(Long boardId) {
+    boardLikeRepository.deleteById(boardId);
   }
 }

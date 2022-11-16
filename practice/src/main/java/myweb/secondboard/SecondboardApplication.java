@@ -1,11 +1,13 @@
 package myweb.secondboard;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
 import myweb.secondboard.domain.*;
 import myweb.secondboard.domain.boards.Lesson;
 import myweb.secondboard.domain.boards.Notice;
@@ -40,9 +42,13 @@ public class SecondboardApplication {
 	public String uploadPath() {
 		return "/Users/gaon/git/tennis-project/secondboard/src/main/resources/static/files";
   }
+  @Bean
+  JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+    return new JPAQueryFactory(entityManager);
+  }
 
 //	@Order(1)
-//	@Bean
+//  @Bean
 //	public CommandLineRunner initData(MemberRepository memberRepository,
 //		BoardRepository boardRepository, CommentRepository commentRepository,
 //			LessonRepository lessonRepository, NoticeRepository noticeRepository,
@@ -69,6 +75,7 @@ public class SecondboardApplication {
 //				board.setAuthor(member.getNickname());
 //				board.setContent("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet atque labore obcaecati repellendus sed? Amet dolores dolorum iusto laboriosam natus optio veniam! A aliquid architecto dicta enim maiores mollitia, neque.");
 //				board.setViews(0);
+//        board.setLikeCount(0L);
 //				board.setCreatedDate(LocalDateTime.now().format(dtf));
 //				board.setModifiedDate(LocalDateTime.now().format(dtf));
 //				board.setMember(member);
@@ -87,6 +94,7 @@ public class SecondboardApplication {
 //				notice.setAuthor(member.getNickname());
 //				notice.setContent("test notice");
 //				notice.setViews(0);
+//        notice.setLikeCount(0L);
 //				notice.setCreatedDate(LocalDateTime.now().format(dtf));
 //				notice.setModifiedDate(LocalDateTime.now().format(dtf));
 //				notice.setMember(member);

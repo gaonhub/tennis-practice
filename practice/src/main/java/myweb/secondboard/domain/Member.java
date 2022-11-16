@@ -5,12 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import myweb.secondboard.dto.MemberSaveForm;
 import myweb.secondboard.dto.MemberUpdateForm;
-import myweb.secondboard.web.Gender;
-import myweb.secondboard.web.PasswordEncrypt;
-import myweb.secondboard.web.Provider;
-import myweb.secondboard.web.Role;
+import myweb.secondboard.web.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -55,6 +53,10 @@ public class Member implements Serializable {
   @Enumerated(EnumType.STRING)
   private Role role;
 
+  @NotNull
+  @Column(length = 12)
+  private Tier tier;
+
   @OneToOne
   @JoinColumn(name = "record_id")
   private Record record;
@@ -77,6 +79,7 @@ public class Member implements Serializable {
     member.setProvider(Provider.GOGOTENNIS);
     member.setRecord(record);
     member.setRole(Role.MEMBER);
+    member.setTier(Tier.IRON);
     return member;
   }
 
@@ -94,6 +97,7 @@ public class Member implements Serializable {
     member.setEmail(userInfo.get("email").toString());
     member.setLoginId(userInfo.get("email").toString());
     member.setRole(Role.MEMBER);
+    member.setTier(Tier.IRON);
 
     //==임시로 휴대전화 번호 넣어줌==//
     member.setPhoneNumber("01012341234");

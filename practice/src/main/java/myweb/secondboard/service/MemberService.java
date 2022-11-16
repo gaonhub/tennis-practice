@@ -113,9 +113,6 @@ public class MemberService {
     return member.getId();
   }
 
-  public List<Member> findAllByPoints() {
-    return memberRepository.findAllByPoints();
-  }
 }
 
 

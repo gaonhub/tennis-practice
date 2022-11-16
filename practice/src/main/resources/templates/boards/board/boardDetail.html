@@ -12,7 +12,6 @@
   <script src="https://code.jquery.com/jquery-3.6.1.js"
           integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
           crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body class="pt-6">
 <nav th:replace="fragments/bodyheader :: bodyHeader"></nav>
@@ -40,7 +39,7 @@
           <img th:src="@{/images/views.png}" alt="logo" height="10" width="20">
           <a th:text="${board.views}"></a>
         </div>
-        <div th:if="${session.loginMember != null}">
+        <div th:if="${session.loginMember != null}"> <!--th:if="${session.loginMember != null}" -->
           <div th:if="${session.loginMember.id == board.member.id}" style="display: inline-block">
             <form class="col" role="form" th:action="@{/boards/update/{id} (id=${board.id})}"
                   method="get">
@@ -54,7 +53,7 @@
                     th:onclick="deleteBoard([[${board.id}]])" id="board_delete_button">게시글 삭제</button>
           </div>
         </div>
-      </div>
+      </div> <!--d-flex justify-content-between-->
 
       <br>
       <br>
@@ -64,14 +63,15 @@
           <p th:utext="${board.content}"></p>
           <br>
           <br>
-            <div class="content heart-btn2">
+            <div class="content heart-btn2" th:if="${session.loginMember != null}">
               <span class="heart"id="boardId" th:value="${board.id}"></span>
               <span class="like" id="likeCount" th:text="'like '+ ${likeCount}"></span>
               <span hidden id="checkLike" th:value="${checkLike}"></span>
             </div>
-            <div class="report-btn report-content">
-              <span id="reportBtn" class="report" th:value="${reportCount}">신고</span>
+            <div class="report-btn report-content" th:if="${session.loginMember != null}">
+              <span id="reportBtn" class="report">신고</span>
             </div>
+          <span id="reportCount" hidden th:value="${reportCount}"></span>
         </div> <!-- 게시글 본문 끝 -->
       </div>
       </div>
@@ -88,7 +88,7 @@
                 </tr> <!-- 여기부터 댓글시작 -->
                 <tr th:each="comment : ${comments}" class="fw-bold mb-1">
                   <hr class="my-0"/>
-                  <div class="card-body p-4"><!-- 몸통 -->
+                  <div class="card-body p-4 reportCount" th:value="${comment.reportCount}"><!-- 몸통 -->
                     <div class="d-flex flex-start">
                       <img class="rounded-circle shadow-1-strong me-3"
                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(26).webp"
@@ -156,6 +156,11 @@
                               </div>
                             </td>
                           </div>
+                          <button th:id="'comment-report-'+${comment.id}"
+                                  th:onclick="reportComment([[${comment.id}]])"
+                          class="border-0 mt-1 ms-1 fs-4 text-danger" style="background: none">
+                            <i class="bi bi-exclamation-triangle"></i>
+                          </button>
                         </div>
                         <table th:if="${!comments.isEmpty()}">
                           <tbody>
@@ -199,7 +204,6 @@
               <br>
               <br>
   </section>
-
   <aside class="secondary secondary-a">
     <br>
     <h3> Community </h3>
@@ -265,9 +269,11 @@
   <br>
 </div>
 </body>
-<script th:src="@{/js/boardDetailPage.js}"></script>
-<script src="/js/like.js"></script>
+
+<script src="/js/boardlike.js"></script>
 <script src="/js/report.js"></script>
+<script src="/js/boardCommentReport.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/boardDetailPage.js}"></script>
 
 </html>

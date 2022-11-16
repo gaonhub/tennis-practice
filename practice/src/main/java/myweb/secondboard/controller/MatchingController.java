@@ -1,5 +1,6 @@
 package myweb.secondboard.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import myweb.secondboard.domain.Matching;
 import myweb.secondboard.domain.Member;
 import myweb.secondboard.domain.Player;
 import myweb.secondboard.dto.MatchingSaveForm;
+import myweb.secondboard.dto.MatchingSearchCondition;
 import myweb.secondboard.dto.MatchingUpdateForm;
 import myweb.secondboard.dto.PlayerAddForm;
 import myweb.secondboard.dto.ResultAddForm;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -51,7 +54,10 @@ public class MatchingController {
     }
     model.addAttribute("carouselDays", carousel);
 
-    List<Matching> matchingList = matchingService.findAllByDate(LocalDate.now());
+//    List<Matching> matchingList = matchingService.findAllByDate(LocalDate.now());
+    MatchingSearchCondition condition = new MatchingSearchCondition();
+    condition.setDate(LocalDate.now().toString());
+    List<Matching> matchingList = matchingService.searchMatchingByBuilder(condition);
 
     model.addAttribute("matchingList", matchingList);
 
@@ -65,6 +71,9 @@ public class MatchingController {
     model.addAttribute("courtTypes", courtTypes);
 
     model.addAttribute("lat", null);
+
+    model.addAttribute("searchCondition", condition);
+    model.addAttribute("currDate", LocalDate.now().toString());
 
     return "/matching/matchingHome";
   }
@@ -83,6 +92,8 @@ public class MatchingController {
 
     Long matchingId = matchingService.addMatching(form, member);
     return "redirect:/matching/detail/" + matchingId;
+
+
   }
 
   @GetMapping("/detail/{matchingId}")
@@ -130,6 +141,7 @@ public class MatchingController {
     matchingForm.setMatchingEndTime(matching.getMatchingEndTime());
     matchingForm.setLat(matching.getLat());
     matchingForm.setLng(matching.getLng());
+    matchingForm.setContent(matching.getContent());
     model.addAttribute("matchingForm", matchingForm);
 
     return "/matching/matchingDetail";
@@ -221,7 +233,10 @@ public class MatchingController {
     }
     model.addAttribute("carouselDays", carousel);
 
-    List<Matching> matchingList = matchingService.findAllByDate(LocalDate.parse(date, dtf));
+//    List<Matching> matchingList = matchingService.findAllByDate(LocalDate.parse(date, dtf));
+    MatchingSearchCondition condition = new MatchingSearchCondition();
+    condition.setDate(date);
+    List<Matching> matchingList = matchingService.searchMatchingByBuilder(condition);
 
     model.addAttribute("matchingList", matchingList);
 
@@ -235,6 +250,40 @@ public class MatchingController {
     model.addAttribute("courtTypes", courtTypes);
 
     model.addAttribute("lat", null);
+
+    model.addAttribute("searchCondition", condition);
+    model.addAttribute("currDate", date);
+
+    return "/matching/matchingHome";
+  }
+
+  @PostMapping("/searchCondition")
+  public String matchingSearchCondition(
+    @ModelAttribute("searchCondition") MatchingSearchCondition condition, Model model) {
+
+    ArrayList<LocalDate> carousel = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      carousel.add(LocalDate.now().plusDays(i));
+    }
+    model.addAttribute("carouselDays", carousel);
+
+    List<Matching> matchingList = matchingService.searchMatchingByBuilder(condition);
+
+    model.addAttribute("matchingList", matchingList);
+
+    MatchingSaveForm matchingForm = new MatchingSaveForm();
+    model.addAttribute("matching", matchingForm);
+
+    MatchingType[] matchTypes = MatchingType.values();
+    model.addAttribute("matchTypes", matchTypes);
+
+    CourtType[] courtTypes = CourtType.values();
+    model.addAttribute("courtTypes", courtTypes);
+
+    model.addAttribute("lat", null);
+
+    model.addAttribute("searchCondition", condition);
+    model.addAttribute("currDate", condition.getDate());
 
     return "/matching/matchingHome";
   }

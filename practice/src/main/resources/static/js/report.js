@@ -3,11 +3,11 @@ function deleteText() {
     const element = document.getElementById('reportText');
 
     element.innerText = '신고 처리된 게시글입니다.';
+
 }
 
 function checkReport() {
-    let reportCount = $("#reportBtn").attr("value");
-    console.log(reportCount)
+    let reportCount = $("#reportCount").attr("value");
     if (reportCount  >= 2) {
         deleteText();
     };
@@ -28,7 +28,7 @@ $(document).ready(function () {
             inputValidator: (value) => {
                 if (!value) {
                     return 'You need to write something!'
-                } else if (value.length < 6) {
+                } else if (value.length < 5) {
                     return '5자 이상 입력해주세요'
                 }
             },
