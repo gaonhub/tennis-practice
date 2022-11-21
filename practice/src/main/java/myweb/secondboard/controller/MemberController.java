@@ -1,34 +1,35 @@
 package myweb.secondboard.controller;
 
         import java.io.IOException;
+        import java.io.PrintWriter;
         import java.nio.charset.StandardCharsets;
         import java.security.NoSuchAlgorithmException;
+        import java.time.LocalDate;
+        import java.time.LocalDateTime;
+        import java.time.LocalTime;
         import java.util.List;
-        import java.util.Map;
+        import java.util.Objects;
         import java.util.Optional;
+        import java.util.UUID;
+        import javax.servlet.http.HttpServletRequest;
+        import javax.servlet.http.HttpServletResponse;
+        import javax.servlet.http.HttpSession;
         import javax.validation.Valid;
         import lombok.RequiredArgsConstructor;
         import lombok.extern.slf4j.Slf4j;
         import myweb.secondboard.domain.Matching;
         import myweb.secondboard.domain.Member;
         import myweb.secondboard.domain.Player;
-        import myweb.secondboard.dto.FindPasswordForm;
-        import myweb.secondboard.dto.MemberSaveForm;
-        import myweb.secondboard.dto.MemberUpdateForm;
-        import myweb.secondboard.dto.UpdatePasswordForm;
+        import myweb.secondboard.dto.*;
+        import myweb.secondboard.service.MatchingService;
         import myweb.secondboard.service.MemberService;
         import myweb.secondboard.service.PlayerService;
+        import org.json.simple.JSONObject;
         import org.springframework.stereotype.Controller;
         import org.springframework.ui.Model;
         import org.springframework.validation.BindingResult;
         import org.springframework.validation.annotation.Validated;
-        import org.springframework.web.bind.annotation.GetMapping;
-        import org.springframework.web.bind.annotation.ModelAttribute;
-        import org.springframework.web.bind.annotation.PathVariable;
-        import org.springframework.web.bind.annotation.PostMapping;
-        import org.springframework.web.bind.annotation.RequestMapping;
-        import org.springframework.web.bind.annotation.RequestParam;
-        import org.springframework.web.bind.annotation.ResponseBody;
+        import org.springframework.web.bind.annotation.*;
         import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -40,6 +41,7 @@ public class MemberController {
   private final MemberService memberService;
 
   private final PlayerService playerService;
+  private final MatchingService matchingService;
 
   @GetMapping("/new")
   public String signUpPage(Model model) {
@@ -63,16 +65,13 @@ public class MemberController {
   @GetMapping("/profile/{memberId}")
   public String profileHome(@PathVariable("memberId") Long memberId, Model model) {
 
-    Member member = memberService.findById(memberId);
-    System.out.println("이제 프로필 출력할께요 ==>"+ member.getFile());
+      Member member = memberService.findById(memberId);
+      model.addAttribute("member", member);
 
-    if(member.getFile() != null){
-      String src = new String(member.getFile().getSaveImg(), StandardCharsets.UTF_8);
-      System.out.println("이제 변경된 프로필 이미지는? ==>"+member.getFile().toString());
-      model.addAttribute("src", src);
-    }
-
-    model.addAttribute("member", member);
+      if(member.getImgEn()!=null){
+          String src = new String(member.getImgEn(), StandardCharsets.UTF_8);
+          model.addAttribute("src", src);
+      }
 
     // 내정보 수정 모달용
     MemberUpdateForm form = new MemberUpdateForm();
@@ -98,10 +97,8 @@ public class MemberController {
       return "/home";
     }
 
-    System.out.println("controller에서 이미지 받았습니다. ==>"+file.isEmpty());
 
     Long memberId = memberService.updateMember(form, file);
-
 
     return "redirect:/members/profile/"+memberId;
   }
@@ -189,7 +186,47 @@ public class MemberController {
     return "redirect:/";
   }
 
+  //== 회원 탈퇴 ==//
+  @ResponseBody
+  @PostMapping("/withdrawl/{memberId}")
+  public JSONObject memberWithdrawl(@PathVariable("memberId")Long memberId,
+                                HttpServletRequest request, Model model) throws IOException {
 
+    JSONObject result = new JSONObject();
+
+    model.addAttribute("memberId", memberId);
+
+    List<Player> players = playerService.findAll();
+    for (Player player : players) {
+      if (Objects.equals(player.getMember().getId(), memberId)) { // 경기에 참가한 적이 있는 회원
+
+        String matchingStartTime = player.getMatching().getMatchingStartTime(); // 21:30
+        LocalDate date = player.getMatching().getMatchingDate(); // 11-18
+        LocalDateTime localDateTime = date.atTime(LocalTime.parse(matchingStartTime)); // 11-18 21:30
+
+        if (localDateTime.isAfter(LocalDateTime.now())) { // 날짜 검증 // 11-18-21:30 is After 11-18 5:45
+
+          result.put("result", "error");
+          return result;
+        }
+      }
+    }
+
+    result.put("result", "success");
+
+    String uuid = UUID.randomUUID().toString();
+
+    // 회원 정보 변경
+    memberService.memberWithDrawl(memberId, uuid);
+
+    // 세션 죽이기(로그아웃)
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+
+    return result;
+  }
 
 
 }

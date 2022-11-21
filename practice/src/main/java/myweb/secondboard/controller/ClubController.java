@@ -2,15 +2,13 @@ package myweb.secondboard.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import myweb.secondboard.domain.Club;
-import myweb.secondboard.domain.ClubMember;
-import myweb.secondboard.domain.Local;
-import myweb.secondboard.domain.Member;
+import myweb.secondboard.domain.*;
 import myweb.secondboard.dto.ClubSaveForm;
 import myweb.secondboard.dto.ClubUpdateForm;
 import myweb.secondboard.service.ClubService;
 import myweb.secondboard.service.LocalService;
 import myweb.secondboard.service.TournamentService;
+import myweb.secondboard.service.VisitorService;
 import myweb.secondboard.web.SessionConst;
 import myweb.secondboard.web.Status;
 import org.springframework.data.domain.Page;
@@ -38,6 +36,7 @@ public class ClubController {
 
   private final ClubService clubService;
   private final LocalService localService;
+  private final VisitorService visitorService;
 
 
   @GetMapping("/club")
@@ -74,10 +73,11 @@ public class ClubController {
   public String clubDetail(@PathVariable("clubId") Long clubId, Model model, HttpServletRequest request) {
 
     Club club = clubService.findOne(clubId);
-    String src = new String(club.getFile().getSaveImg(), StandardCharsets.UTF_8);
-
+    if(club.getImg()!=null){
+      String src = new String(club.getImg(), StandardCharsets.UTF_8);
+      model.addAttribute("src", src);
+    }
     model.addAttribute("club", club);
-    model.addAttribute("src", src);
 
     List<ClubMember> memberList = clubService.getClubMemberList(club.getId());
     model.addAttribute("memberList", memberList);
@@ -89,6 +89,9 @@ public class ClubController {
       ClubMember clubMemberCheck = clubService.clubMemberCheck(clubId, member.getId());
       model.addAttribute("clubMemberCheck", clubMemberCheck);
     }
+
+    // 방명록 보여주기
+    ClubDetailView(clubId, model, club);
 
     // 정보 수정 모달용
     ClubUpdateForm form = new ClubUpdateForm();
@@ -120,30 +123,20 @@ public class ClubController {
     Member member = (Member) request.getSession(false).getAttribute(SessionConst.LOGIN_MEMBER);
     form.setMember(member);
 
+    System.out.println("현재 이미지 파일은?(MultipartFile ==>" + file.isEmpty());
+
     Long clubId = clubService.addClub(form, member, file).getId();
     return "redirect:/club/detail/" + clubId;
   }
 
+  @ResponseBody
   @PostMapping("/club/join")
-  public String joinClub(HttpServletRequest request, Long id, HttpServletResponse response) throws IOException {
+  public String joinClub(HttpServletRequest request, @RequestParam("clubId") Long id, HttpServletResponse response) throws IOException {
     Member member = (Member) request.getSession(false).getAttribute(SessionConst.LOGIN_MEMBER);
     Club club = clubService.findOne(id);
+    clubService.addClubMember(club, member);
 
-    if (club.getStatus().name() != "RECRUITING") {
-      response.setContentType("text/html; charset=utf-8");
-      PrintWriter out = response.getWriter();
-      out.println("<script language = 'javascript'>");
-      out.println("alert('모집 마감된 클럽입니다.')");
-      out.println("</script>");
-      out.flush();
-
-      return "home";
-    }
-
-    club.setMemberCount(club.getMemberCount() + 1);
-    Long clubId = clubService.addClubMember(club, member).getClub().getId();
-
-    return "redirect:/club/detail/" + clubId;
+    return "redirect:/club/detail/" + id;
   }
 
   @PostMapping("/club/update")
@@ -154,9 +147,8 @@ public class ClubController {
       log.info("errors = {}", bindingResult);
       return "/club/clubDetail";
     }
-
+    System.out.println("file = " + file);
     Long clubId = clubService.update(form, file);
-    Club club = clubService.findOne(clubId);
 
     return "redirect:/club/detail/" + clubId;
   }
@@ -181,9 +173,21 @@ public class ClubController {
     ClubMember clubMember = clubService.get(id);
     Member member = (Member) request.getSession(false).getAttribute(SessionConst.LOGIN_MEMBER);
 
-//    if (clubMember.getClub().getLeader().equals(member.getNickname())) {
-//      clubService.deleteClubMember(clubMember.getClub().getId(), clubMember.getMember().getId());
-//    }
+    if (clubMember.getClub().getMember().getNickname().equals(member.getNickname())) {
+      clubService.deleteClubMember(clubMember.getClub().getId(), clubMember.getMember().getId());
+    }
     return "redirect:/club/detail/" + clubMember.getClub().getId();
   }
+
+  private void ClubDetailView(Long clubId, Model model, Club club){
+    model.addAttribute("club", club);
+    List<Visitor> visitors = visitorService.findVisitors(clubId);
+
+    if(visitors!=null){
+      model.addAttribute("visitors", visitors);
+    }
+
+  }
+
+
 }

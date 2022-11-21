@@ -1,8 +1,10 @@
 package myweb.secondboard.controller;
 
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.format.TextStyle;
+
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import myweb.secondboard.domain.Matching;
@@ -15,10 +17,7 @@ import myweb.secondboard.dto.PlayerAddForm;
 import myweb.secondboard.dto.ResultAddForm;
 import myweb.secondboard.service.MatchingService;
 import myweb.secondboard.service.PlayerService;
-import myweb.secondboard.web.CourtType;
-import myweb.secondboard.web.GameResult;
-import myweb.secondboard.web.MatchingType;
-import myweb.secondboard.web.SessionConst;
+import myweb.secondboard.web.*;
 import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,8 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Controller
@@ -45,19 +43,36 @@ public class MatchingController {
   private final MatchingService matchingService;
   private final PlayerService playerService;
 
+  //ModelAttribute 컨트롤러 레벨에 적용
+  @ModelAttribute
+  public void addAttributes(Model model) {
+    ArrayList<LocalDate> carousel = new ArrayList<>(); //날짜
+    ArrayList<String> dayKR = new ArrayList<>(); //요일
+    Map<LocalDate, String> carouselDay = new LinkedHashMap<>();
+    for (int i = 0; i <10 ; i++) {
+
+      carousel.add(LocalDate.now().plusDays(i));
+      dayKR.add(LocalDate.now().plusDays(i).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
+      carouselDay.put(carousel.get(i), dayKR.get(i));
+    }
+    model.addAttribute("carouselDay", carouselDay);
+  }
+
   @GetMapping("/home")
   public String home(Model model) {
-
-    ArrayList<LocalDate> carousel = new ArrayList<>();
-    for (int i = 0; i < 10; i++) {
-      carousel.add(LocalDate.now().plusDays(i));
-    }
-    model.addAttribute("carouselDays", carousel);
 
 //    List<Matching> matchingList = matchingService.findAllByDate(LocalDate.now());
     MatchingSearchCondition condition = new MatchingSearchCondition();
     condition.setDate(LocalDate.now().toString());
     List<Matching> matchingList = matchingService.searchMatchingByBuilder(condition);
+
+    for (Matching matching : matchingList) {
+      if (matching.getMember().getNickname().contains("탈퇴된")) {
+        matching.setAuthor(matching.getMember().getNickname());
+        System.out.println("matching.getMember().getNickname() = " + matching.getMember().getNickname());
+        matching.setMatchingCondition(MatchingCondition.FAIL);
+      }
+    }
 
     model.addAttribute("matchingList", matchingList);
 
@@ -69,6 +84,11 @@ public class MatchingController {
 
     CourtType[] courtTypes = CourtType.values();
     model.addAttribute("courtTypes", courtTypes);
+
+    List<String> matchingPlaces = matchingService.getMatchingPlaces(LocalDate.now().toString());
+    System.out.println("matchingPlaces = " + matchingPlaces);
+
+
 
     model.addAttribute("lat", null);
 
@@ -92,8 +112,6 @@ public class MatchingController {
 
     Long matchingId = matchingService.addMatching(form, member);
     return "redirect:/matching/detail/" + matchingId;
-
-
   }
 
   @GetMapping("/detail/{matchingId}")
@@ -108,6 +126,19 @@ public class MatchingController {
       .toList();
     List<Player> playersB = players.stream().filter(m -> m.getTeam().toString().equals("B"))
       .toList();
+
+    List<List<Player>> playerListA = new ArrayList<>();
+    List<List<Player>> playerListB = new ArrayList<>();
+
+    for (int i = 0; i < playersA.size(); i++) {
+      playerListA.add(playerService.findByMemberId(playersA.get(i).getMember().getId()));
+    }
+    for (int i = 0; i < playersB.size(); i++) {
+      playerListB.add(playerService.findByMemberId(playersB.get(i).getMember().getId()));
+    }
+
+    model.addAttribute("playerListA", playerListA);
+    model.addAttribute("playerListB", playerListB);
 
     model.addAttribute("playersA", playersA);
     model.addAttribute("playersB", playersB);
@@ -238,6 +269,14 @@ public class MatchingController {
     condition.setDate(date);
     List<Matching> matchingList = matchingService.searchMatchingByBuilder(condition);
 
+    for (Matching matching : matchingList) {
+      if (matching.getMember().getNickname().contains("탈퇴된")) {
+        matching.setAuthor(matching.getMember().getNickname());
+        System.out.println("matching.getMember().getNickname() = " + matching.getMember().getNickname());
+        matching.setMatchingCondition(MatchingCondition.FAIL);
+      }
+    }
+
     model.addAttribute("matchingList", matchingList);
 
     MatchingSaveForm matchingForm = new MatchingSaveForm();
@@ -248,6 +287,9 @@ public class MatchingController {
 
     CourtType[] courtTypes = CourtType.values();
     model.addAttribute("courtTypes", courtTypes);
+
+    List<String> matchingPlaces = matchingService.getMatchingPlaces(date);
+    model.addAttribute("matchingPlaces", matchingPlaces);
 
     model.addAttribute("lat", null);
 
@@ -279,6 +321,9 @@ public class MatchingController {
 
     CourtType[] courtTypes = CourtType.values();
     model.addAttribute("courtTypes", courtTypes);
+
+    List<String> matchingPlaces = matchingService.getMatchingPlaces(condition.getDate());
+    model.addAttribute("matchingPlaces", matchingPlaces);
 
     model.addAttribute("lat", null);
 

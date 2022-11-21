@@ -1,7 +1,6 @@
 package myweb.secondboard.service;
 
 import lombok.RequiredArgsConstructor;
-import myweb.secondboard.domain.File;
 import myweb.secondboard.domain.Member;
 import myweb.secondboard.domain.Record;
 import myweb.secondboard.dto.MemberSaveForm;
@@ -26,7 +25,6 @@ import java.util.Optional;
 public class MemberService {
 
   private final MemberRepository memberRepository;
-  private final FileService fileService;
   private final RecordRepository recordRepository;
 
   @Transactional
@@ -54,9 +52,15 @@ public class MemberService {
     return memberRepository.findById(memberId).get();
   }
 
+  public List<Member> findAll(){
+    return memberRepository.findAll();
+  }
+
   @Transactional
   public Member kakaoSignUp(Map<String, Object> userInfo, String access_token) {
-    Member member = Member.createKakaoMember(userInfo, access_token);
+    Record record = Record.createRecord();
+    Member member = Member.createKakaoMember(userInfo, access_token, record);
+    recordRepository.save(record);
     memberRepository.save(member);
     return member;
   }
@@ -87,32 +91,47 @@ public class MemberService {
     Member member = findById(form.getId());
 
     // 닉네임, 자기소개 변경
-    System.out.println("이미지 상관없이 닉네임과 자기소개 수정합니다.");
     member.updateMember(form, member);
 
-    File originFile = member.getFile();
+//    첫 테스트
+//    member.setImgEn(file, member);
 
-    // 처음 프로필 이미지 수정 할 때
-    if(member.getFile()==null){
-      System.out.println("기본이미지가 없어서 file추가합니다.");
-      originFile = File.createImg(fileService.ImgSave(file));
-      System.out.println("이미지 추가했어요 이미지번호는 ==>"+originFile.getId());
-      member.setFile(originFile);
-    } else {
-      if(file.isEmpty()!=false){
-        System.out.println("파일 수정 없다.!");
-        return member.getId();
+
+    // 첫 회원가입으로 이미지가 없을때
+    if(member.getImgEn() == null){
+      // 기본 이미지X, 새로 받은 파일 O
+      if(!file.isEmpty()){
+        System.out.println("기본 이미지X, 새로 받은 파일 O");
+        member.setImgEn(file, member);
       } else {
-        System.out.println("파일 수정 있다.!");
-        byte[] files = fileService.ImgSave(file);
-        originFile.setSaveImg(files);
-        member.setFile(originFile);
+        System.out.println("기존 이미지 X, 새로 받은 이미지 X");
+        // 기존 이미지 X, 새로 받은 이미지 X
+      }
+    } else {
+      // 기본 이미지 O, 새로 받은 파일 O
+      if (!file.isEmpty()) {
+        System.out.println("기본 이미지 O, 새로 받은 파일 O");
+        member.setImgEn(file, member);
+      } else {
+        // 기본이미지 o, 새로 받은 파일 X
+        System.out.println("기본이미지 o, 새로 받은 파일 X");
       }
     }
 
     return member.getId();
   }
 
+
+
+  @Transactional
+  public Long memberWithDrawl(Long memberId, String uuid) {
+
+    Member member = findById(memberId);
+
+    member.memberWithdrawl(member, uuid);
+
+    return member.getId();
+  }
 }
 
 

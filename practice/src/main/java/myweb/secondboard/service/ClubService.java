@@ -3,13 +3,11 @@ package myweb.secondboard.service;
 import lombok.RequiredArgsConstructor;
 import myweb.secondboard.domain.Club;
 import myweb.secondboard.domain.ClubMember;
-import myweb.secondboard.domain.File;
 import myweb.secondboard.domain.Member;
 import myweb.secondboard.dto.ClubSaveForm;
 import myweb.secondboard.dto.ClubUpdateForm;
 import myweb.secondboard.repository.ClubMemberRepository;
 import myweb.secondboard.repository.ClubRepository;
-import myweb.secondboard.repository.FileRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,6 @@ public class ClubService {
 
   private final ClubRepository clubRepository;
   private final ClubMemberRepository clubMemberRepository;
-  private final FileRepository fileRepository;
-  private final FileService fileService;
 
   public Page<Club> getClubList(Pageable pageable) {
     return clubRepository.findAll(pageable);
@@ -40,12 +36,7 @@ public class ClubService {
   @Transactional
   public Club addClub(ClubSaveForm form, Member member, MultipartFile photoImg) throws IOException {
 
-    File file = File.createImg(fileService.ImgSave(photoImg));
-    fileRepository.save(file);
-
-    // case : 사진 업로드 안할때 -> view에서 src로 기본사진 불러옴.
-
-    Club club = Club.createClub(form, file, member);
+    Club club = Club.createClub(form, member, photoImg);
     clubRepository.save(club);
 
     ClubMember clubMember = ClubMember.createClubMember(club, member);
@@ -58,6 +49,7 @@ public class ClubService {
   public ClubMember addClubMember(Club club, Member member) {
     ClubMember clubMember = ClubMember.createClubMember(club, member);
     clubMemberRepository.save(clubMember);
+    club.setMemberCount(club.getMemberCount() + 1);
     return clubMember;
   }
 
@@ -76,17 +68,10 @@ public class ClubService {
   @Transactional
   public Long update(ClubUpdateForm form, MultipartFile file) throws IOException {
 
-    Club club = clubRepository.findOne(form.getId());
-    File originFile = club.getFile();
-    byte[] files = fileService.ImgSave(file);
+    Club originclub = clubRepository.findOne(form.getId());
+    originclub.updateClub(form, originclub, file);
 
-    if(!file.isEmpty()){
-      originFile.updateImgPath(originFile, files);
-    }
-
-    club.updateClub(form, club);
-
-    return club.getId();
+    return originclub.getId();
   }
 
   @Transactional

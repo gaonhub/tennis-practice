@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/boardHome1.css">
     <link rel="stylesheet" href="/css/boardHome2.css">
     <link href="/css/banner.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/hotBoards.css">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.1.js"
@@ -59,20 +60,31 @@
                 <thead class="bg-light">
                 <tr>
                     <th>번호</th>
+                    <th>상태</th>
                     <th>제목</th>
                     <th>작성자</th>
-                    <th>작성일</th>
-                    <th>조회수</th>
+                    <th class="text-center">작성일</th>
+                    <th class="text-center">조회수</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="question:${questionList}"
-                    th:onclick="|location.href='@{/question/detail/{id} (id=${question.id})}'|" role="button">
+                <tr
+                    th:each="question:${questionList}" th:id="'question-'+${question.id}"
+                    th:onclick="questionClick([[${question.id}]])" role="button">
                     <td th:text="${question.id}">1</td>
-                    <td th:text="${question.title}"></td>
+                    <td th:if="${question.condition.toString().equals('ACCEPT')}">
+                        <span th:text="${question.condition.getTitle()}"
+                               class="badge text-bg-success rounded-pill d-inline" style="margin-left: -3px"></span>
+                    </td>
+                    <td th:if="${question.condition.toString().equals('COMPLETE')}">
+                        <span th:text="${question.condition.getTitle()}"
+                              class="badge text-bg-secondary rounded-pill d-inline" style="margin-left: -3px"></span>
+                    </td>
+                    <td><span><i class="bi bi-lock-fill text-muted"></i></span>
+                        <span th:text="${question.title}"></span></td>
                     <td th:text="${question.author}"></td>
-                    <td th:text="${question.createdDate}"></td>
-                    <td th:text="${question.views}"></td>
+                    <td class="text-center" th:text="${question.createdDate}"></td>
+                    <td class="text-center" th:text="${question.views}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -133,33 +145,13 @@
         </br>
         <h3>핫 게시물</h3>
         </br>
-        <ul class="user-list message-list">
-            <li class="user-item message-item">
-                <p class="message-content">
-                    1번 게시글
-                </p>
+        <ol class="user-list message-list">
+            <li class="user-item message-item" th:each="hotboard, state : ${hotBoardList}">
+                <h6 th:text="${state.count} + '. ' + ${hotboard.title}"
+                    th:onclick="|location.href='@{/boards/detail/{id} (id=${hotboard.id})}'|"
+                    role="button"></h6>
             </li>
-            <li class="user-item message-item">
-                <p class="message-content">
-                    2번 게시글
-                </p>
-            </li>
-            <li class="user-item message-item">
-                <p class="message-content">
-                    3번 게시글
-                </p>
-            </li>
-            <li class="user-item message-item">
-                <p class="message-content">
-                    4번 게시글
-                </p>
-            </li>
-            <li class="user-item message-item">
-                <p class="message-content">
-                    5번 게시글
-                </p>
-            </li>
-        </ul>
+        </ol>
     </aside>
     <!-- </div> -->
 
@@ -173,8 +165,11 @@
     <br>
     <br>
 </div>
-
-
+<div hidden id="loginMember" th:value="${session.loginMember}"></div>
+<div hidden th:if="${session.loginMember != null}" id="loginMemberNickname" th:value="${session.loginMember.nickname}"></div>
+<div hidden th:if="${session.loginMember != null}" id="loginMemberRole" th:value="${session.loginMember.role.toString()}"></div>
+<script src="/js/question.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
 
