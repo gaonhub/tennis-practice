@@ -30,12 +30,12 @@
 
 <nav th:replace="fragments/bodyheader :: bodyHeader"></nav>
 <!-- banner -->
-<div class="board_banner_area">
+<div class="board_banner_area" >
     <div class="board_banner_text">
-        <h1>Community</h1>
-        <p>come and join!</p>
+        <h1 style="color: #3c763d">Community</h1>
+        <p style="color: #3c763d">come and join!</p>
     </div>
-    <img src="/images/community.jpg" alt="배너 이미지" class="board_banner_area" style="height: 470px">
+    <img src="/images/community2.jpg" alt="배너 이미지" class="board_banner_area" style="height: 470px">
 </div>
 
 <div class="page">
@@ -129,7 +129,7 @@
         <ol class="p-0 message-list">
             <li class="user-item message-item" th:each="hotboard, state : ${hotBoardList}">
                 <i class="fa-solid fw-bold fs-5 me-2 text-center" style="color: orangered; width: 17px;" th:text="${state.count}"></i>
-<!--                <h6 class="fw-bold me-1" style="color: orangered" th:text="${state.count}"></h6>-->
+                <!--                <h6 class="fw-bold me-1" style="color: orangered" th:text="${state.count}"></h6>-->
                 <h6 class="line_limit" style=" "th:text= "${hotboard.title}" th:onclick="|location.href='@{/boards/detail/{id} (id=${hotboard.id})}'|" role="button"></h6>
             </li>
         </ol>

@@ -85,11 +85,11 @@
       <div class="container my-5 py-5">
         <div class="row d-flex justify-content-center">
           <div class="col-md-12 col-lg-10">
-            <div class="card text-dark">
+            <div class="card text-dark rounded-4">
               <div class="card-body p-4">
                 <thead>
                 <tr>
-                  <th>Recent Comment</th>
+                  <th>Comment</th>
                 </tr> <!-- 여기부터 댓글시작 -->
                 <tr th:each="comment : ${comments}" class="fw-bold mb-1">
                   <hr class="my-0"/>
@@ -174,7 +174,7 @@
                                 border: none;
                                 background: white;
                                 width: 400px;
-                                height: 70px"
+                                height: 40px"
                               th:id="'comment-content-'+${comment.id}"
                               disabled
                               th:text="${comment.content}"></textarea>
@@ -192,22 +192,16 @@
                   <div th:if="${session.loginMember != null}">   <!-- 댓글 입력 창 -->
                     <div class="comment-input-body">
                       <input hidden id="board-id" th:value="${board.id}">
-                      <textarea id="comment" class="form-control" rows="4"
+                      <textarea id="comment" class="form-control rounded-4 mt-3 bg-light" rows="4"
                                 placeholder="댓글을 입력하세요"></textarea>
                     </div>
                     <br>
                     <div class="d-flex justify-content-end">
-                      <button class="shadow-sm" id="comment-submit" type="submit">등록</button>
+                      <button class="shadow-sm btn btn-primary px-2 py-2" id="comment-submit" type="submit">댓글 쓰기</button>
                     </div>
                   </div>
                 </div>
               </div>
-
-
-              <br>
-              <br>
-              <br>
-              <br>
   </section>
   <aside class="secondary-a text-center">
     <div class="bg-white mt-5" id="sidebar-wrapper">

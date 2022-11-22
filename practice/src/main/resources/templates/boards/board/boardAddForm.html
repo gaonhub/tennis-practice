@@ -14,7 +14,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-  <title>Board Add</title>
+
 
 </head>
 <style>
@@ -45,40 +45,40 @@
   }
 </style>
 <body>
-  <div class="container">   <!-- Container Start -->
-    <nav th:replace="fragments/bodyheader :: bodyHeader"></nav>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+<div class="container">   <!-- Container Start -->
+  <nav th:replace="fragments/bodyheader :: bodyHeader"></nav>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
 
-      <div class="board-main"> <!-- Board Main Start -->
-        <h4>글쓰기</h4>
-        <form role="form" th:object="${board}" action="/boards/new" method="post">
-          <div class="form-group">
-            <label th:for="title"></label>
-            <input id="title" type="text" class="form-control" th:field="${board.title}"
-                   placeholder="제목을 입력해주세요." />
-            <div class="field-error" th:errors="${board.title}"></div>
-          </div>
-          <div class="form-group">
-            <label th:for="content"></label>
-            <textarea id="summernote" type="text" class="form-control" th:field="${board.content}"
-                      placeholder="내용을 입력해주세요."></textarea>
-            <div class="field-error" th:errors="${board.content}"></div>
-          </div>
-          <div class="d-md-flex justify-content-end">
-          <button type="submit" class="btn btn-primary button-submit mt-3" id="board-submit">등록하기</button>
-          </div>
-        </form>
-      </div> <!-- Board Main End -->
+  <div class="board-main"> <!-- Board Main Start -->
+    <h4>글쓰기</h4>
+    <form role="form" th:object="${board}" action="/boards/new" method="post">
+      <div class="form-group">
+        <label th:for="title"></label>
+        <input id="title" type="text" class="form-control" th:field="${board.title}"
+               placeholder="제목을 입력해주세요." />
+        <div class="field-error" th:errors="${board.title}"></div>
+      </div>
+      <div class="form-group">
+        <label th:for="content"></label>
+        <textarea id="summernote" type="text" class="form-control" th:field="${board.content}"
+                  placeholder="내용을 입력해주세요."></textarea>
+        <div class="field-error" th:errors="${board.content}"></div>
+      </div>
+      <div class="d-md-flex justify-content-end">
+        <button type="submit" class="btn btn-primary button-submit mt-3" id="board-submit">등록하기</button>
+      </div>
+    </form>
+  </div> <!-- Board Main End -->
 
-      <div class="side-menu-right"> <!-- Right Side Menu Start -->
-      </div> <!-- Right Side Menu End -->
-    </div> <!-- board end -->
-    <footer th:replace="fragments/footer :: footer"></footer>
-  </div> <!-- Container End -->
+  <div class="side-menu-right"> <!-- Right Side Menu Start -->
+  </div> <!-- Right Side Menu End -->
+</div> <!-- board end -->
+<footer th:replace="fragments/footer :: footer"></footer>
+</div> <!-- Container End -->
 
 
 </body>
