@@ -10,11 +10,11 @@ button{
 }
 
 #board_update_button {
-  color: grey;
+  color: mediumseagreen;
 }
 
 #board_delete_button {
-  color: lightgrey;
+  color: tomato;
 }
 
 #board_content_box {
