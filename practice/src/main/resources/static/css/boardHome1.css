@@ -111,7 +111,7 @@
 
 .user-item {
 	display: flex;
-	margin-bottom: 1.5em;
+	margin-bottom: 0.5em;
 }
 
 .user-photo {
@@ -170,6 +170,15 @@
 .comment-delete-:hover .static {
 	display: none
 }
+
+.line_limit {
+	width:150px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	display:block;
+}
+
 
 /*.comment-update- .animated {*/
 /*	display: none*/
